@@ -38,6 +38,7 @@ public class JuegoTron extends JFrame {
 
     //personaje con el que voy a jugar
     String Mipersonaje;
+    Personaje Minave;
 
     //matriz para el movimiento de las naves
     JPanel[][] matriz = new JPanel[40][40];
@@ -179,7 +180,7 @@ public class JuegoTron extends JFrame {
                 PanelPersonajes.setVisible(false);
                 titulo.setVisible(false);
                 nombrePersonaje.setVisible(false);
-                Mipersonaje = "rojo";
+                Mipersonaje = "asset/red.png";
                 System.out.print(Mipersonaje);
 
                 panelJuego.setVisible(true);
@@ -213,7 +214,7 @@ public class JuegoTron extends JFrame {
                 PanelPersonajes.setVisible(false);
                 titulo.setVisible(false);
                 nombrePersonaje.setVisible(false);
-                Mipersonaje = "verde";
+                Mipersonaje = "asset/blue.png";
                 System.out.print(Mipersonaje);
 
                 panelJuego.setVisible(true);
@@ -246,7 +247,7 @@ public class JuegoTron extends JFrame {
                 PanelPersonajes.setVisible(false);
                 titulo.setVisible(false);
                 nombrePersonaje.setVisible(false);
-                Mipersonaje = "gris";
+                Mipersonaje = "asset/gray.png";
                 System.out.print(Mipersonaje);
 
                 panelJuego.setVisible(true);
@@ -289,8 +290,11 @@ public class JuegoTron extends JFrame {
                 if (x == 35 && y == 20) {
 
                     JLabel imagen = new JLabel();
-                    String nombre = "asset/red.png";
-                    ImageIcon imageicon = new ImageIcon(nombre);
+                    //String nombre = "asset/red.png";
+                    Minave = new Personaje(35,20,null);
+                    Minave.setNaveImg(Mipersonaje);
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    System.out.print("img : " + Minave.getNaveImg());
                     Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
                     imagen.setIcon(icon);
                     imagen.setBounds(0, 0, 22, 22);

@@ -13,13 +13,11 @@ public class Personaje {
     private int ejeX;
     private int ejeY;
     private String naveImg;
-    private String naveExp;
 
-    public Personaje(int ejeX, int ejeY, String naveImg, String naveExp) {
+    public Personaje(int ejeX, int ejeY, String naveImg) {
         this.ejeX = ejeX;
         this.ejeY = ejeY;
         this.naveImg = naveImg;
-        this.naveExp = naveExp;
     }
 
     public int getEjeX() {
@@ -46,13 +44,7 @@ public class Personaje {
         this.naveImg = naveImg;
     }
 
-    public String getNaveExp() {
-        return naveExp;
-    }
-
-    public void setNaveExp(String naveExp) {
-        this.naveExp = naveExp;
-    }
+    
     
     
     
