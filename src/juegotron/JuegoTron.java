@@ -13,6 +13,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -45,12 +47,11 @@ public class JuegoTron extends JFrame {
 
     public JuegoTron() {
         crearVentana();
-
-        boton();
-
+        //boton();
         panelPersonajes();
         panelJuego();
         fondo();
+        logica();
         accionesBotones();
         fuente();
     }
@@ -85,7 +86,7 @@ public class JuegoTron extends JFrame {
             Font sizedFont = font.deriveFont(65f);
             Font sizedFontEstandar = font.deriveFont(15f);
             titulo.setFont(sizedFont);
-            BotonEmpezar.setFont(sizedFontEstandar);
+            //BotonEmpezar.setFont(sizedFontEstandar);
             nombrePersonaje.setFont(sizedFontEstandar);
         } catch (FontFormatException ex) {
             System.err.println("error en font format");
@@ -161,29 +162,39 @@ public class JuegoTron extends JFrame {
         nombrePersonaje.setBounds(350, 490, 300, 50);
         this.add(nombrePersonaje);
 
+        PanelPersonajes.setVisible(true);
+
     }
 
     public void accionesBotones() {
-        BotonEmpezar.addActionListener(new ActionListener() {
+        /* BotonEmpezar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PanelPersonajes.setVisible(true);
             }
 
-        });
+        });*/
 
         imagen.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 PanelPersonajes.setVisible(false);
-                BotonEmpezar.setVisible(false);
+                //BotonEmpezar.setVisible(false);
                 PanelPersonajes.setVisible(false);
                 titulo.setVisible(false);
                 nombrePersonaje.setVisible(false);
                 Mipersonaje = "asset/red.png";
-                System.out.print(Mipersonaje);
-
+                //System.out.println(Mipersonaje);
                 panelJuego.setVisible(true);
+
+                Minave = new Personaje(35, 20, Mipersonaje);
+                Minave.setNaveImg(Mipersonaje);
+                ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                System.out.print("img : " + Minave.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[35][20].add(imagen);
 
             }
 
@@ -210,14 +221,21 @@ public class JuegoTron extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 PanelPersonajes.setVisible(false);
-                BotonEmpezar.setVisible(false);
+                //BotonEmpezar.setVisible(false);
                 PanelPersonajes.setVisible(false);
                 titulo.setVisible(false);
                 nombrePersonaje.setVisible(false);
                 Mipersonaje = "asset/blue.png";
-                System.out.print(Mipersonaje);
-
                 panelJuego.setVisible(true);
+
+                Minave = new Personaje(35, 20, Mipersonaje);
+                Minave.setNaveImg(Mipersonaje);
+                ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[35][20].add(imagen);
+
             }
 
             @Override
@@ -243,7 +261,7 @@ public class JuegoTron extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 PanelPersonajes.setVisible(false);
-                BotonEmpezar.setVisible(false);
+                //BotonEmpezar.setVisible(false);
                 PanelPersonajes.setVisible(false);
                 titulo.setVisible(false);
                 nombrePersonaje.setVisible(false);
@@ -251,6 +269,14 @@ public class JuegoTron extends JFrame {
                 System.out.print(Mipersonaje);
 
                 panelJuego.setVisible(true);
+
+                Minave = new Personaje(35, 20, Mipersonaje);
+                Minave.setNaveImg(Mipersonaje);
+                ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[35][20].add(imagen);
             }
 
             @Override
@@ -286,32 +312,172 @@ public class JuegoTron extends JFrame {
                 matriz[x][y] = new JPanel();
                 matriz[x][y].setBackground(Color.black);
                 panelJuego.add(matriz[x][y]);
-
-                if (x == 35 && y == 20) {
-
-                    JLabel imagen = new JLabel();
-                    //String nombre = "asset/red.png";
-                    Minave = new Personaje(35,20,null);
-                    Minave.setNaveImg(Mipersonaje);
-                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                    System.out.print("img : " + Minave.getNaveImg());
-                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                    imagen.setIcon(icon);
-                    imagen.setBounds(0, 0, 22, 22);
-                    matriz[x][y].add(imagen);
-                    matriz[x][y].setBackground(Color.black);
-
-                    //creamos el objeto Enemigo1
-                    //enemigo1 = new Enemigo(x, y);
-
-
-                }
-
+                JLabel imagen = new JLabel();
+                matriz[x][y].setBackground(Color.black);
             }
         }
 
         this.add(panelJuego);
         panelJuego.setVisible(false);
+
+    }
+
+    public void logica() {
+        System.out.println("logica");
+
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == 'd') {
+                    //derecha   
+                    int ejeX = Minave.getEjeX();
+                    int ejeY = Minave.getEjeY();
+                    int derecha = Minave.getEjeY() + 1;
+
+                    //reseteamos panel derecho
+                    matriz[ejeX][derecha].removeAll();
+                    matriz[ejeX][derecha].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][derecha].add(imagen);
+                    matriz[ejeX][derecha].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Minave.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                    } else if (Minave.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                    } else if (Minave.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                    }
+
+                    Minave.setEjeY(derecha);
+
+                } else if (e.getKeyChar() == 'a'){
+                    
+                    //izquierda 
+                    int ejeX = Minave.getEjeX();
+                    int ejeY = Minave.getEjeY();
+                    int izquierda = Minave.getEjeY() - 1;
+
+                    //reseteamos panel derecho
+                    matriz[ejeX][izquierda].removeAll();
+                    matriz[ejeX][izquierda].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][izquierda].add(imagen);
+                    matriz[ejeX][izquierda].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Minave.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                    } else if (Minave.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                    } else if (Minave.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                    }
+
+                    Minave.setEjeY(izquierda);
+                    
+                    
+                
+                } else if (e.getKeyChar() == 'w'){
+                    
+                    //arriba 
+                    int ejeX = Minave.getEjeX();
+                    int ejeY = Minave.getEjeY();
+                    int arriba = Minave.getEjeX() - 1;
+
+                    //reseteamos panel arriba
+                    matriz[arriba][ejeY].removeAll();
+                    matriz[arriba][ejeY].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[arriba][ejeY].add(imagen);
+                    matriz[arriba][ejeY].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Minave.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                    } else if (Minave.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                    } else if (Minave.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                    }
+
+                    Minave.setEjeX(arriba);
+                    
+                    
+                
+                } else if (e.getKeyChar() == 's'){
+                    
+                    //arriba 
+                    int ejeX = Minave.getEjeX();
+                    int ejeY = Minave.getEjeY();
+                    int abajo = Minave.getEjeX() + 1;
+
+                    //reseteamos panel arriba
+                    matriz[abajo][ejeY].removeAll();
+                    matriz[abajo][ejeY].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[abajo][ejeY].add(imagen);
+                    matriz[abajo][ejeY].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Minave.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                    } else if (Minave.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                    } else if (Minave.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                    }
+
+                    Minave.setEjeX(abajo);
+                    
+                    
+                
+                }
+            }
+        });
 
     }
 
