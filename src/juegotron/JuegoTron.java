@@ -45,6 +45,9 @@ public class JuegoTron extends JFrame {
     //matriz para el movimiento de las naves
     JPanel[][] matriz = new JPanel[40][40];
 
+    //estados de las casillas
+    Estado[][] estados = new Estado[40][40];
+
     public JuegoTron() {
         crearVentana();
         //boton();
@@ -303,7 +306,7 @@ public class JuegoTron extends JFrame {
     public void panelJuego() {
 
         panelJuego = new JPanel();
-        panelJuego.setBounds(0, 0, 690, 590);
+        panelJuego.setBounds(20, 85, 690, 590);
         panelJuego.setOpaque(false);
         panelJuego.setLayout(new GridLayout(40, 40));
 
@@ -312,6 +315,8 @@ public class JuegoTron extends JFrame {
                 matriz[x][y] = new JPanel();
                 matriz[x][y].setBackground(Color.black);
                 panelJuego.add(matriz[x][y]);
+                //estado de la casilla
+                estados[x][y] = new Estado(false);
                 JLabel imagen = new JLabel();
                 matriz[x][y].setBackground(Color.black);
             }
@@ -344,137 +349,289 @@ public class JuegoTron extends JFrame {
                     int ejeY = Minave.getEjeY();
                     int derecha = Minave.getEjeY() + 1;
 
-                    //reseteamos panel derecho
-                    matriz[ejeX][derecha].removeAll();
-                    matriz[ejeX][derecha].repaint();
-                    JLabel imagen = new JLabel();
+                    try {
+                        Estado proximoMovimiento = estados[ejeX][derecha];
 
-                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                    imagen.setIcon(icon);
-                    imagen.setBounds(0, 0, 22, 22);
-                    matriz[ejeX][derecha].add(imagen);
-                    matriz[ejeX][derecha].setBackground(Color.black);
-                    //elimina todo la posicion actual donde esta el pacman
-                    matriz[ejeX][ejeY].removeAll();
-                    matriz[ejeX][ejeY].repaint();
+                        if (proximoMovimiento.getEstado()) {
 
-                    //pintamos de color por donde pasa
-                    if (Minave.getNaveImg() == "asset/red.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.red);
-                    } else if (Minave.getNaveImg() == "asset/blue.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
-                    } else if (Minave.getNaveImg() == "asset/gray.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                            System.out.println("choque");
+
+                            // explosion
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+                            Minave.setNaveImg("asset/explosion.png");
+                            ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][ejeY].add(imagen);
+                            //fin explosion
+
+                        } else {
+
+                            //reseteamos panel derecho
+                            matriz[ejeX][derecha].removeAll();
+                            matriz[ejeX][derecha].repaint();
+                            JLabel imagen = new JLabel();
+
+                            ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][derecha].add(imagen);
+                            matriz[ejeX][derecha].setBackground(Color.black);
+                            //elimina todo la posicion actual donde esta el pacman
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+
+                            //pintamos de color por donde pasa
+                            if (Minave.getNaveImg() == "asset/red.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.red);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Minave.getNaveImg() == "asset/blue.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Minave.getNaveImg() == "asset/gray.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.gray);
+                                estados[ejeX][ejeY].setEstado(true);
+                            }
+
+                            Minave.setEjeY(derecha);
+
+                        }
+
+                    } catch (ArrayIndexOutOfBoundsException excepcio) {
+                        matriz[ejeX][ejeY].removeAll();
+                        matriz[ejeX][ejeY].repaint();
+                        Minave.setNaveImg("asset/explosion.png");
+                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[ejeX][ejeY].add(imagen);
+
+                    } catch (ArithmeticException excepcion) {
+                        System.out.println(" Error de índice en un array");
+                    } finally {
+                        System.out.println("Se ejecuta finally");
                     }
 
-                    Minave.setEjeY(derecha);
+                } else if (e.getKeyChar() == 'a') {
 
-                } else if (e.getKeyChar() == 'a'){
-                    
                     //izquierda 
                     int ejeX = Minave.getEjeX();
                     int ejeY = Minave.getEjeY();
                     int izquierda = Minave.getEjeY() - 1;
 
-                    //reseteamos panel derecho
-                    matriz[ejeX][izquierda].removeAll();
-                    matriz[ejeX][izquierda].repaint();
-                    JLabel imagen = new JLabel();
+                    try {
+                        Estado proximoMovimiento = estados[ejeX][izquierda];
+                        if (proximoMovimiento.getEstado()) {
+                            System.out.println("choque");
 
-                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                    imagen.setIcon(icon);
-                    imagen.setBounds(0, 0, 22, 22);
-                    matriz[ejeX][izquierda].add(imagen);
-                    matriz[ejeX][izquierda].setBackground(Color.black);
-                    //elimina todo la posicion actual donde esta el pacman
-                    matriz[ejeX][ejeY].removeAll();
-                    matriz[ejeX][ejeY].repaint();
+                            // explosion
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+                            Minave.setNaveImg("asset/explosion.png");
+                            ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][ejeY].add(imagen);
+                            //fin explosion
 
-                    //pintamos de color por donde pasa
-                    if (Minave.getNaveImg() == "asset/red.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.red);
-                    } else if (Minave.getNaveImg() == "asset/blue.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
-                    } else if (Minave.getNaveImg() == "asset/gray.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                        } else {
+
+                            //reseteamos panel derecho
+                            matriz[ejeX][izquierda].removeAll();
+                            matriz[ejeX][izquierda].repaint();
+                            JLabel imagen = new JLabel();
+
+                            ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][izquierda].add(imagen);
+                            matriz[ejeX][izquierda].setBackground(Color.black);
+                            //elimina todo la posicion actual donde esta el pacman
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+
+                            //pintamos de color por donde pasa
+                            if (Minave.getNaveImg() == "asset/red.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.red);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Minave.getNaveImg() == "asset/blue.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Minave.getNaveImg() == "asset/gray.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.gray);
+                                estados[ejeX][ejeY].setEstado(true);
+                            }
+
+                            Minave.setEjeY(izquierda);
+
+                        }
+
+                    } catch (ArrayIndexOutOfBoundsException excepcio) {
+                        matriz[ejeX][ejeY].removeAll();
+                        matriz[ejeX][ejeY].repaint();
+                        Minave.setNaveImg("asset/explosion.png");
+                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[ejeX][ejeY].add(imagen);
+
+                    } catch (ArithmeticException excepcion) {
+                        System.out.println(" Error de índice en un array");
+                    } finally {
+                        System.out.println("Se ejecuta finally");
                     }
 
-                    Minave.setEjeY(izquierda);
-                    
-                    
-                
-                } else if (e.getKeyChar() == 'w'){
-                    
+                } else if (e.getKeyChar() == 'w') {
+
                     //arriba 
                     int ejeX = Minave.getEjeX();
                     int ejeY = Minave.getEjeY();
                     int arriba = Minave.getEjeX() - 1;
 
-                    //reseteamos panel arriba
-                    matriz[arriba][ejeY].removeAll();
-                    matriz[arriba][ejeY].repaint();
-                    JLabel imagen = new JLabel();
+                    try {
+                        Estado proximoMovimiento = estados[arriba][ejeY];
+                        if (proximoMovimiento.getEstado()) {
+                            System.out.println("choque");
 
-                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                    imagen.setIcon(icon);
-                    imagen.setBounds(0, 0, 22, 22);
-                    matriz[arriba][ejeY].add(imagen);
-                    matriz[arriba][ejeY].setBackground(Color.black);
-                    //elimina todo la posicion actual donde esta el pacman
-                    matriz[ejeX][ejeY].removeAll();
-                    matriz[ejeX][ejeY].repaint();
+                            // explosion
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+                            Minave.setNaveImg("asset/explosion.png");
+                            ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][ejeY].add(imagen);
+                            //fin explosion
 
-                    //pintamos de color por donde pasa
-                    if (Minave.getNaveImg() == "asset/red.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.red);
-                    } else if (Minave.getNaveImg() == "asset/blue.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
-                    } else if (Minave.getNaveImg() == "asset/gray.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                        } else {
+
+                            //reseteamos panel arriba
+                            matriz[arriba][ejeY].removeAll();
+                            matriz[arriba][ejeY].repaint();
+                            JLabel imagen = new JLabel();
+
+                            ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[arriba][ejeY].add(imagen);
+                            matriz[arriba][ejeY].setBackground(Color.black);
+                            //elimina todo la posicion actual donde esta el pacman
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+
+                            //pintamos de color por donde pasa
+                            if (Minave.getNaveImg() == "asset/red.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.red);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Minave.getNaveImg() == "asset/blue.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Minave.getNaveImg() == "asset/gray.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.gray);
+                                estados[ejeX][ejeY].setEstado(true);
+                            }
+
+                            Minave.setEjeX(arriba);
+
+                        }
+
+                    } catch (ArrayIndexOutOfBoundsException excepcio) {
+                        matriz[ejeX][ejeY].removeAll();
+                        matriz[ejeX][ejeY].repaint();
+                        Minave.setNaveImg("asset/explosion.png");
+                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[ejeX][ejeY].add(imagen);
+
+                    } catch (ArithmeticException excepcion) {
+                        System.out.println(" Error de índice en un array");
+                    } finally {
+                        System.out.println("Se ejecuta finally");
                     }
 
-                    Minave.setEjeX(arriba);
-                    
-                    
-                
-                } else if (e.getKeyChar() == 's'){
-                    
+                } else if (e.getKeyChar() == 's') {
+
                     //arriba 
                     int ejeX = Minave.getEjeX();
                     int ejeY = Minave.getEjeY();
                     int abajo = Minave.getEjeX() + 1;
 
-                    //reseteamos panel arriba
-                    matriz[abajo][ejeY].removeAll();
-                    matriz[abajo][ejeY].repaint();
-                    JLabel imagen = new JLabel();
+                    try
+                    {
+                    Estado proximoMovimiento = estados[abajo][ejeY];
+                    if (proximoMovimiento.getEstado()) {
+                        System.out.println("choque");
 
-                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                    imagen.setIcon(icon);
-                    imagen.setBounds(0, 0, 22, 22);
-                    matriz[abajo][ejeY].add(imagen);
-                    matriz[abajo][ejeY].setBackground(Color.black);
-                    //elimina todo la posicion actual donde esta el pacman
-                    matriz[ejeX][ejeY].removeAll();
-                    matriz[ejeX][ejeY].repaint();
+                        // explosion
+                        matriz[ejeX][ejeY].removeAll();
+                        matriz[ejeX][ejeY].repaint();
+                        Minave.setNaveImg("asset/explosion.png");
+                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[ejeX][ejeY].add(imagen);
+                        //fin explosion
 
-                    //pintamos de color por donde pasa
-                    if (Minave.getNaveImg() == "asset/red.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.red);
-                    } else if (Minave.getNaveImg() == "asset/blue.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
-                    } else if (Minave.getNaveImg() == "asset/gray.png") {
-                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                    } else {
+
+                        //reseteamos panel arriba
+                        matriz[abajo][ejeY].removeAll();
+                        matriz[abajo][ejeY].repaint();
+                        JLabel imagen = new JLabel();
+
+                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[abajo][ejeY].add(imagen);
+                        matriz[abajo][ejeY].setBackground(Color.black);
+                        //elimina todo la posicion actual donde esta el pacman
+                        matriz[ejeX][ejeY].removeAll();
+                        matriz[ejeX][ejeY].repaint();
+
+                        //pintamos de color por donde pasa
+                        if (Minave.getNaveImg() == "asset/red.png") {
+                            matriz[ejeX][ejeY].setBackground(Color.red);
+                            estados[ejeX][ejeY].setEstado(true);
+                        } else if (Minave.getNaveImg() == "asset/blue.png") {
+                            matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                            estados[ejeX][ejeY].setEstado(true);
+                        } else if (Minave.getNaveImg() == "asset/gray.png") {
+                            matriz[ejeX][ejeY].setBackground(Color.gray);
+                            estados[ejeX][ejeY].setEstado(true);
+                        }
+
+                        Minave.setEjeX(abajo);
+
                     }
+                    
+                    } catch (ArrayIndexOutOfBoundsException excepcio) {
+                        matriz[ejeX][ejeY].removeAll();
+                        matriz[ejeX][ejeY].repaint();
+                        Minave.setNaveImg("asset/explosion.png");
+                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[ejeX][ejeY].add(imagen);
 
-                    Minave.setEjeX(abajo);
-                    
-                    
-                
+                    } catch (ArithmeticException excepcion) {
+                        System.out.println(" Error de índice en un array");
+                    } finally {
+                        System.out.println("Se ejecuta finally");
+                    }
                 }
             }
         });
