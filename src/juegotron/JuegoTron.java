@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  *
@@ -34,7 +35,7 @@ import javax.swing.JPanel;
 public class JuegoTron extends JFrame {
 
     JLabel fondoMenuPrincipal, titulo, nombrePersonaje;
-    JLabel imagen, imagen2, imagen3;
+    JLabel imagen, imagen2, imagen3, imagen4;
     JButton BotonEmpezar;
     JPanel PanelPersonajes, panelJuego;
 
@@ -42,11 +43,40 @@ public class JuegoTron extends JFrame {
     String Mipersonaje;
     Personaje Minave;
 
+    //enemigo
+    Enemigo Mienemigo;
+    String naveEnemiga;
+    int movimientoNaveEnemigo;
+    int colorMovimiento;
+    int cambioDireccion = 0;
+    /*
+    1 - rojo
+    2 - verde
+    3 - gris
+     */
+    boolean colision;
+
+    //fin enemigo
     //matriz para el movimiento de las naves
     JPanel[][] matriz = new JPanel[40][40];
 
     //estados de las casillas
     Estado[][] estados = new Estado[40][40];
+
+    //movimientos
+    boolean derechaM = false;
+    boolean izquierdaM = false;
+    boolean arribaM = false;
+    boolean abajoM = false;
+
+    Timer timer = new Timer(150, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            naveEnemiga();
+            speed();
+
+        }
+    });
 
     public JuegoTron() {
         crearVentana();
@@ -57,6 +87,7 @@ public class JuegoTron extends JFrame {
         logica();
         accionesBotones();
         fuente();
+        //timer.start();
     }
 
     public void crearVentana() {
@@ -190,14 +221,36 @@ public class JuegoTron extends JFrame {
                 //System.out.println(Mipersonaje);
                 panelJuego.setVisible(true);
 
+                //nave
                 Minave = new Personaje(35, 20, Mipersonaje);
                 Minave.setNaveImg(Mipersonaje);
                 ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                System.out.print("img : " + Minave.getNaveImg());
                 Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
                 imagen.setIcon(icon);
                 imagen.setBounds(0, 0, 22, 22);
                 matriz[35][20].add(imagen);
+
+                //enemigo
+                imagen4 = new JLabel();
+                int numero = (int) (Math.random() * 2 + 1);
+                if (numero == 1) {
+                    naveEnemiga = "asset/gray.png";
+                    colorMovimiento = 3;
+                } else if (numero == 2) {
+                    naveEnemiga = "asset/blue.png";
+                    colorMovimiento = 2;
+                }
+                System.out.println(numero);
+                Mienemigo = new Enemigo(5, 20, naveEnemiga);
+                Mienemigo.setNaveImg(naveEnemiga);
+                ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
+                Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen4.setIcon(iconEnemigo);
+                imagen4.setBounds(0, 0, 22, 22);
+                matriz[5][20].add(imagen4);
+                //fin enemigo
+
+                timer.start();
 
             }
 
@@ -238,6 +291,28 @@ public class JuegoTron extends JFrame {
                 imagen.setIcon(icon);
                 imagen.setBounds(0, 0, 22, 22);
                 matriz[35][20].add(imagen);
+
+                //enemigo
+                imagen4 = new JLabel();
+                int numero = (int) (Math.random() * 2 + 1);
+                if (numero == 1) {
+                    naveEnemiga = "asset/gray.png";
+                    colorMovimiento = 3;
+                } else if (numero == 2) {
+                    naveEnemiga = "asset/red.png";
+                    colorMovimiento = 1;
+                }
+                System.out.println(numero);
+                Mienemigo = new Enemigo(5, 20, naveEnemiga);
+                Mienemigo.setNaveImg(naveEnemiga);
+                ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
+                Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen4.setIcon(iconEnemigo);
+                imagen4.setBounds(0, 0, 22, 22);
+                matriz[5][20].add(imagen4);
+                //fin enemigo
+
+                timer.start();
 
             }
 
@@ -280,6 +355,29 @@ public class JuegoTron extends JFrame {
                 imagen.setIcon(icon);
                 imagen.setBounds(0, 0, 22, 22);
                 matriz[35][20].add(imagen);
+
+                //enemigo
+                imagen4 = new JLabel();
+                int numero = (int) (Math.random() * 2 + 1);
+                if (numero == 1) {
+                    naveEnemiga = "asset/red.png";
+                    colorMovimiento = 1;
+                } else if (numero == 2) {
+                    naveEnemiga = "asset/blue.png";
+                    colorMovimiento = 2;
+                }
+                System.out.println(numero);
+                Mienemigo = new Enemigo(5, 20, naveEnemiga);
+                Mienemigo.setNaveImg(naveEnemiga);
+                ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
+                Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen4.setIcon(iconEnemigo);
+                imagen4.setBounds(0, 0, 22, 22);
+                matriz[5][20].add(imagen4);
+                //fin enemigo
+
+                timer.start();
+
             }
 
             @Override
@@ -397,6 +495,10 @@ public class JuegoTron extends JFrame {
                             }
 
                             Minave.setEjeY(derecha);
+                            derechaM = true;
+                            izquierdaM = false;
+                            arribaM = false;
+                            abajoM = false;
 
                         }
 
@@ -469,6 +571,10 @@ public class JuegoTron extends JFrame {
                             }
 
                             Minave.setEjeY(izquierda);
+                            derechaM = false;
+                            izquierdaM = true;
+                            arribaM = false;
+                            abajoM = false;
 
                         }
 
@@ -541,6 +647,10 @@ public class JuegoTron extends JFrame {
                             }
 
                             Minave.setEjeX(arriba);
+                            derechaM = false;
+                            izquierdaM = false;
+                            arribaM = true;
+                            abajoM = false;
 
                         }
 
@@ -562,61 +672,64 @@ public class JuegoTron extends JFrame {
 
                 } else if (e.getKeyChar() == 's') {
 
-                    //arriba 
+                    //abajo 
                     int ejeX = Minave.getEjeX();
                     int ejeY = Minave.getEjeY();
                     int abajo = Minave.getEjeX() + 1;
 
-                    try
-                    {
-                    Estado proximoMovimiento = estados[abajo][ejeY];
-                    if (proximoMovimiento.getEstado()) {
-                        System.out.println("choque");
+                    try {
+                        Estado proximoMovimiento = estados[abajo][ejeY];
+                        if (proximoMovimiento.getEstado()) {
+                            System.out.println("choque");
 
-                        // explosion
-                        matriz[ejeX][ejeY].removeAll();
-                        matriz[ejeX][ejeY].repaint();
-                        Minave.setNaveImg("asset/explosion.png");
-                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                        imagen.setIcon(icon);
-                        imagen.setBounds(0, 0, 22, 22);
-                        matriz[ejeX][ejeY].add(imagen);
-                        //fin explosion
+                            // explosion
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+                            Minave.setNaveImg("asset/explosion.png");
+                            ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][ejeY].add(imagen);
+                            //fin explosion
 
-                    } else {
+                        } else {
 
-                        //reseteamos panel arriba
-                        matriz[abajo][ejeY].removeAll();
-                        matriz[abajo][ejeY].repaint();
-                        JLabel imagen = new JLabel();
+                            //reseteamos panel arriba
+                            matriz[abajo][ejeY].removeAll();
+                            matriz[abajo][ejeY].repaint();
+                            JLabel imagen = new JLabel();
 
-                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                        imagen.setIcon(icon);
-                        imagen.setBounds(0, 0, 22, 22);
-                        matriz[abajo][ejeY].add(imagen);
-                        matriz[abajo][ejeY].setBackground(Color.black);
-                        //elimina todo la posicion actual donde esta el pacman
-                        matriz[ejeX][ejeY].removeAll();
-                        matriz[ejeX][ejeY].repaint();
+                            ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[abajo][ejeY].add(imagen);
+                            matriz[abajo][ejeY].setBackground(Color.black);
+                            //elimina todo la posicion actual donde esta el pacman
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
 
-                        //pintamos de color por donde pasa
-                        if (Minave.getNaveImg() == "asset/red.png") {
-                            matriz[ejeX][ejeY].setBackground(Color.red);
-                            estados[ejeX][ejeY].setEstado(true);
-                        } else if (Minave.getNaveImg() == "asset/blue.png") {
-                            matriz[ejeX][ejeY].setBackground(Color.GREEN);
-                            estados[ejeX][ejeY].setEstado(true);
-                        } else if (Minave.getNaveImg() == "asset/gray.png") {
-                            matriz[ejeX][ejeY].setBackground(Color.gray);
-                            estados[ejeX][ejeY].setEstado(true);
+                            //pintamos de color por donde pasa
+                            if (Minave.getNaveImg() == "asset/red.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.red);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Minave.getNaveImg() == "asset/blue.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Minave.getNaveImg() == "asset/gray.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.gray);
+                                estados[ejeX][ejeY].setEstado(true);
+                            }
+
+                            Minave.setEjeX(abajo);
+                            derechaM = false;
+                            izquierdaM = false;
+                            arribaM = false;
+                            abajoM = true;
+
                         }
 
-                        Minave.setEjeX(abajo);
-
-                    }
-                    
                     } catch (ArrayIndexOutOfBoundsException excepcio) {
                         matriz[ejeX][ejeY].removeAll();
                         matriz[ejeX][ejeY].repaint();
@@ -635,6 +748,655 @@ public class JuegoTron extends JFrame {
                 }
             }
         });
+
+    }
+
+    public void speed() {
+
+        if (derechaM) {
+
+            //derecha   
+            int ejeX = Minave.getEjeX();
+            int ejeY = Minave.getEjeY();
+            int derecha = Minave.getEjeY() + 1;
+
+            try {
+                Estado proximoMovimiento = estados[ejeX][derecha];
+
+                if (proximoMovimiento.getEstado()) {
+
+                    System.out.println("choque");
+
+                    // explosion
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+                    Minave.setNaveImg("asset/explosion.png");
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][ejeY].add(imagen);
+                    //fin explosion
+
+                } else {
+
+                    //reseteamos panel derecho
+                    matriz[ejeX][derecha].removeAll();
+                    matriz[ejeX][derecha].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][derecha].add(imagen);
+                    matriz[ejeX][derecha].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Minave.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Minave.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Minave.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                        estados[ejeX][ejeY].setEstado(true);
+                    }
+
+                    Minave.setEjeY(derecha);
+                    derechaM = true;
+                    izquierdaM = false;
+                    arribaM = false;
+                    abajoM = false;
+
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcio) {
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+                Minave.setNaveImg("asset/explosion.png");
+                ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[ejeX][ejeY].add(imagen);
+
+            } catch (ArithmeticException excepcion) {
+                System.out.println(" Error de índice en un array");
+            } finally {
+                System.out.println("Se ejecuta finally");
+            }
+
+        } else if (izquierdaM) {
+
+            //izquierda 
+            int ejeX = Minave.getEjeX();
+            int ejeY = Minave.getEjeY();
+            int izquierda = Minave.getEjeY() - 1;
+
+            try {
+                Estado proximoMovimiento = estados[ejeX][izquierda];
+                if (proximoMovimiento.getEstado()) {
+                    System.out.println("choque");
+
+                    // explosion
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+                    Minave.setNaveImg("asset/explosion.png");
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][ejeY].add(imagen);
+                    //fin explosion
+
+                } else {
+
+                    //reseteamos panel derecho
+                    matriz[ejeX][izquierda].removeAll();
+                    matriz[ejeX][izquierda].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][izquierda].add(imagen);
+                    matriz[ejeX][izquierda].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Minave.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Minave.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Minave.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                        estados[ejeX][ejeY].setEstado(true);
+                    }
+
+                    Minave.setEjeY(izquierda);
+                    derechaM = false;
+                    izquierdaM = true;
+                    arribaM = false;
+                    abajoM = false;
+
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcio) {
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+                Minave.setNaveImg("asset/explosion.png");
+                ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[ejeX][ejeY].add(imagen);
+
+            } catch (ArithmeticException excepcion) {
+                System.out.println(" Error de índice en un array");
+            } finally {
+                System.out.println("Se ejecuta finally");
+            }
+
+        } else if (arribaM) {
+
+            //arriba 
+            int ejeX = Minave.getEjeX();
+            int ejeY = Minave.getEjeY();
+            int arriba = Minave.getEjeX() - 1;
+
+            try {
+                Estado proximoMovimiento = estados[arriba][ejeY];
+                if (proximoMovimiento.getEstado()) {
+                    System.out.println("choque");
+
+                    // explosion
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+                    Minave.setNaveImg("asset/explosion.png");
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][ejeY].add(imagen);
+                    //fin explosion
+
+                } else {
+
+                    //reseteamos panel arriba
+                    matriz[arriba][ejeY].removeAll();
+                    matriz[arriba][ejeY].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[arriba][ejeY].add(imagen);
+                    matriz[arriba][ejeY].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Minave.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Minave.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Minave.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                        estados[ejeX][ejeY].setEstado(true);
+                    }
+
+                    Minave.setEjeX(arriba);
+                    derechaM = false;
+                    izquierdaM = false;
+                    arribaM = true;
+                    abajoM = false;
+
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcio) {
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+                Minave.setNaveImg("asset/explosion.png");
+                ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[ejeX][ejeY].add(imagen);
+
+            } catch (ArithmeticException excepcion) {
+                System.out.println(" Error de índice en un array");
+            } finally {
+                System.out.println("Se ejecuta finally");
+            }
+
+        } else if (abajoM) {
+
+            //abajo 
+            int ejeX = Minave.getEjeX();
+            int ejeY = Minave.getEjeY();
+            int abajo = Minave.getEjeX() + 1;
+
+            try {
+                Estado proximoMovimiento = estados[abajo][ejeY];
+                if (proximoMovimiento.getEstado()) {
+                    System.out.println("choque");
+
+                    // explosion
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+                    Minave.setNaveImg("asset/explosion.png");
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][ejeY].add(imagen);
+                    //fin explosion
+
+                } else {
+
+                    //reseteamos panel arriba
+                    matriz[abajo][ejeY].removeAll();
+                    matriz[abajo][ejeY].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[abajo][ejeY].add(imagen);
+                    matriz[abajo][ejeY].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Minave.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Minave.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Minave.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                        estados[ejeX][ejeY].setEstado(true);
+                    }
+
+                    Minave.setEjeX(abajo);
+                    derechaM = false;
+                    izquierdaM = false;
+                    arribaM = false;
+                    abajoM = true;
+
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcio) {
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+                Minave.setNaveImg("asset/explosion.png");
+                ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[ejeX][ejeY].add(imagen);
+
+            } catch (ArithmeticException excepcion) {
+                System.out.println(" Error de índice en un array");
+            } finally {
+                System.out.println("Se ejecuta finally");
+            }
+
+        }
+
+    }
+
+    public void naveEnemiga() {
+        /*        
+        1 --> derecha
+        2 --> izquierda
+        3 --> arriba
+        4 --> abajo
+         */
+
+        if (cambioDireccion == 0) {
+            movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+        }
+        //System.out.println(movimientoEnemigo1);
+
+        //movimientoNaveEnemigo = 4;
+        if (movimientoNaveEnemigo == 1) {
+            int ejeX = Mienemigo.getEjeX();
+            int ejeY = Mienemigo.getEjeY();
+            int derecha = Mienemigo.getEjeY() + 1;
+            int izquierda = Mienemigo.getEjeY() - 1;
+
+            try {
+                Estado EstadoCritico = estados[ejeX][ejeY + 2];
+                Estado EstadoColision = estados[ejeX][ejeY + 1];
+                
+                Estado EstadoCriticoIzquierda = estados[ejeX][ejeY - 2];
+                Estado EstadoCriticoArriba = estados[ejeX - 2][ejeY];
+                Estado EstadoCriticoAbajo = estados[ejeX + 2][ejeY];
+                
+                
+                if(EstadoCritico.getEstado() && EstadoCriticoIzquierda.getEstado() && EstadoCriticoArriba.getEstado() && EstadoCriticoAbajo.getEstado() ){
+                    
+                    System.out.println("He morido");
+                    
+                    
+                }else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
+                    System.out.println("toca parada y cambiar de movimiento");
+                    do {
+                        movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                        System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                    } while (movimientoNaveEnemigo == 1);
+                    cambioDireccion = 0;
+                    System.out.println("toca parada y cambiar de movimiento");
+
+                } else {
+
+                    //reseteamos panel derecho
+                    matriz[ejeX][derecha].removeAll();
+                    matriz[ejeX][derecha].repaint();
+                    JLabel imagen = new JLabel();
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][derecha].add(imagen);
+                    matriz[ejeX][derecha].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    if (colorMovimiento == 1) {
+                        matriz[ejeX][ejeY].setBackground(Color.RED);
+                    } else if (colorMovimiento == 2) {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                    } else if (colorMovimiento == 3) {
+                        matriz[ejeX][ejeY].setBackground(Color.GRAY);
+                    }
+
+                    estados[ejeX][ejeY].setEstado(true);
+                    Mienemigo.setEjeY(derecha);
+                    //cambiarMovimiento1++;
+                    cambioDireccion++;
+                    if (cambioDireccion == 6) {
+                        cambioDireccion = 0;
+                    }
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcion) {
+                System.out.println("toca parada y cambiar de movimiento");
+                do {
+                    movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                    System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                } while (movimientoNaveEnemigo == 1);
+                cambioDireccion = 0;
+            }
+
+        } else if (movimientoNaveEnemigo == 2) {
+
+            int ejeX = Mienemigo.getEjeX();
+            int ejeY = Mienemigo.getEjeY();
+            int derecha = Mienemigo.getEjeY() + 1;
+            int izquierda = Mienemigo.getEjeY() - 1;
+
+            try {
+                Estado EstadoCritico = estados[ejeX][ejeY - 2];
+                Estado EstadoColision = estados[ejeX][ejeY - 1];
+
+                Estado EstadoCriticoDerecha = estados[ejeX][ejeY + 2];
+                Estado EstadoCriticoArriba = estados[ejeX - 2][ejeY];
+                Estado EstadoCriticoAbajo = estados[ejeX + 2][ejeY];
+                
+                
+                if(EstadoCritico.getEstado() && EstadoCriticoDerecha.getEstado() && EstadoCriticoArriba.getEstado() && EstadoCriticoAbajo.getEstado() ){
+                    
+                    System.out.println("He morido");
+                    /*
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+                    Mienemigo.setNaveImg("asset/explosion.png");
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen4.setIcon(icon);
+                    imagen4.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][ejeY].add(imagen4);
+                    */
+                    //reseteamos panel derecho
+                    matriz[ejeX][izquierda].removeAll();
+                    matriz[ejeX][izquierda].repaint();
+                    JLabel imagen = new JLabel();
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][izquierda].add(imagen);
+                    matriz[ejeX][izquierda].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    if (colorMovimiento == 1) {
+                        matriz[ejeX][ejeY].setBackground(Color.RED);
+                    } else if (colorMovimiento == 2) {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                    } else if (colorMovimiento == 3) {
+                        matriz[ejeX][ejeY].setBackground(Color.GRAY);
+                    }
+
+                    estados[ejeX][ejeY].setEstado(true);
+                    Mienemigo.setEjeY(izquierda);
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                }else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
+                    System.out.println("toca parada y cambiar de movimiento");
+                    do {
+                        movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                        System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                    } while (movimientoNaveEnemigo == 2);
+                    cambioDireccion = 0;
+                    System.out.println("toca parada y cambiar de movimiento");
+
+                } else {
+
+                    //reseteamos panel derecho
+                    matriz[ejeX][izquierda].removeAll();
+                    matriz[ejeX][izquierda].repaint();
+                    JLabel imagen = new JLabel();
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][izquierda].add(imagen);
+                    matriz[ejeX][izquierda].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    if (colorMovimiento == 1) {
+                        matriz[ejeX][ejeY].setBackground(Color.RED);
+                    } else if (colorMovimiento == 2) {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                    } else if (colorMovimiento == 3) {
+                        matriz[ejeX][ejeY].setBackground(Color.GRAY);
+                    }
+
+                    estados[ejeX][ejeY].setEstado(true);
+                    Mienemigo.setEjeY(izquierda);
+                    //cambiarMovimiento1++;
+
+                    cambioDireccion++;
+                    if (cambioDireccion == 6) {
+                        cambioDireccion = 0;
+                    }
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcion) {
+                System.out.println("toca parada y cambiar de movimiento");
+                do {
+                    movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                    System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                } while (movimientoNaveEnemigo == 2);
+                cambioDireccion = 0;
+            }
+
+        } else if (movimientoNaveEnemigo == 3) {
+
+            int ejeX = Mienemigo.getEjeX();
+            int ejeY = Mienemigo.getEjeY();
+            int derecha = Mienemigo.getEjeY() + 1;
+            int arriba = Mienemigo.getEjeX() - 1;
+
+            try {
+                Estado EstadoCritico = estados[ejeX - 2][ejeY];
+                Estado EstadoColision = estados[ejeX - 1][ejeY];
+
+                if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
+                    System.out.println("toca parada y cambiar de movimiento");
+                    do {
+                        movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                        System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                    } while (movimientoNaveEnemigo == 3);
+                    cambioDireccion = 0;
+
+                } else {
+
+                    //reseteamos panel derecho
+                    matriz[arriba][ejeY].removeAll();
+                    matriz[arriba][ejeY].repaint();
+                    JLabel imagen = new JLabel();
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[arriba][ejeY].add(imagen);
+                    matriz[arriba][ejeY].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    if (colorMovimiento == 1) {
+                        matriz[ejeX][ejeY].setBackground(Color.RED);
+                    } else if (colorMovimiento == 2) {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                    } else if (colorMovimiento == 3) {
+                        matriz[ejeX][ejeY].setBackground(Color.GRAY);
+                    }
+
+                    estados[ejeX][ejeY].setEstado(true);
+                    Mienemigo.setEjeX(arriba);
+                    //cambiarMovimiento1++;
+                    cambioDireccion++;
+                    if (cambioDireccion == 6) {
+                        cambioDireccion = 0;
+                    }
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcion) {
+                System.out.println("toca parada y cambiar de movimiento");
+                do {
+                    movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                    System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                } while (movimientoNaveEnemigo == 3);
+                cambioDireccion = 0;
+            }
+
+        } else if (movimientoNaveEnemigo == 4) {
+
+            int ejeX = Mienemigo.getEjeX();
+            int ejeY = Mienemigo.getEjeY();
+            int derecha = Mienemigo.getEjeY() + 1;
+            int abajo = Mienemigo.getEjeX() + 1;
+
+            try {
+                Estado EstadoCritico = estados[ejeX + 2][ejeY];
+                Estado EstadoColision = estados[ejeX + 1][ejeY];
+
+                if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
+
+                    System.out.println("toca parada y cambiar de movimiento");
+                    do {
+                        movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                        System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                    } while (movimientoNaveEnemigo == 4);
+                    cambioDireccion = 0;
+
+                    System.out.println("toca parada y cambiar de movimiento");
+
+                } else {
+
+                    //reseteamos panel derecho
+                    matriz[abajo][ejeY].removeAll();
+                    matriz[abajo][ejeY].repaint();
+                    JLabel imagen = new JLabel();
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[abajo][ejeY].add(imagen);
+                    matriz[abajo][ejeY].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    if (colorMovimiento == 1) {
+                        matriz[ejeX][ejeY].setBackground(Color.RED);
+                    } else if (colorMovimiento == 2) {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                    } else if (colorMovimiento == 3) {
+                        matriz[ejeX][ejeY].setBackground(Color.GRAY);
+                    }
+
+                    estados[ejeX][ejeY].setEstado(true);
+                    Mienemigo.setEjeX(abajo);
+                    //cambiarMovimiento1++;
+                    cambioDireccion++;
+                    if (cambioDireccion == 6) {
+                        cambioDireccion = 0;
+                    }
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcion) {
+                System.out.println("toca parada y cambiar de movimiento");
+                System.out.println("toca parada y cambiar de movimiento");
+                do {
+                    movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                    System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                } while (movimientoNaveEnemigo == 4);
+                cambioDireccion = 0;
+            }
+
+        }
 
     }
 
