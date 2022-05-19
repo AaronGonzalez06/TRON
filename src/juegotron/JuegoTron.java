@@ -1200,23 +1200,7 @@ public class JuegoTron extends JFrame {
                     }
 
                     estados[ejeX][ejeY].setEstado(true);
-                    Mienemigo.setEjeY(izquierda);
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                    Mienemigo.setEjeY(izquierda);                                      
                     
                 }else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
                     System.out.println("toca parada y cambiar de movimiento");
@@ -1323,7 +1307,7 @@ public class JuegoTron extends JFrame {
                 }
 
             } catch (ArrayIndexOutOfBoundsException excepcion) {
-                System.out.println("toca parada y cambiar de movimiento");
+                System.out.println("fuera");
                 do {
                     movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
                     System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
