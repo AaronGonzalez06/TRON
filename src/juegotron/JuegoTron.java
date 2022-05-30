@@ -96,6 +96,7 @@ public class JuegoTron extends JFrame {
     public void crearVentana() {
 
         this.setSize(750, 750);
+        this.setLocation(400, 100);
         //pone titulo a la ventana
         setTitle("TRON");
         //nos hace el cierre de la ventana 
