@@ -34,7 +34,7 @@ import javax.swing.Timer;
  */
 public class JuegoTron extends JFrame {
 
-    JLabel fondoMenuPrincipal, titulo, nombrePersonaje;
+    JLabel fondoMenuPrincipal, titulo, nombrePersonaje, puntuacion , puntuacionEnemiga;
     JLabel imagen, imagen2, imagen3, imagen4;
     JButton BotonEmpezar;
     JPanel PanelPersonajes, panelJuego;
@@ -43,6 +43,9 @@ public class JuegoTron extends JFrame {
     String Mipersonaje;
     Personaje Minave;
 
+    int sumador = 0;
+    int sumadorEnemigo = 0;
+    
     //enemigo
     Enemigo Mienemigo;
     String naveEnemiga;
@@ -104,6 +107,23 @@ public class JuegoTron extends JFrame {
         this.setLayout(null);
 
         titulo = new JLabel();
+        
+        
+        
+        puntuacion = new JLabel();
+        puntuacion.setText("Puntuacion: " + sumador);
+        puntuacion.setBounds(50, 65, 300, 50);
+        this.add(puntuacion);
+        puntuacion.setVisible(false);
+        
+        puntuacionEnemiga = new JLabel();
+        puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
+        puntuacionEnemiga.setBounds(510, 65, 300, 50);
+        this.add(puntuacionEnemiga);
+        puntuacionEnemiga.setVisible(false);
+        
+        
+        
         titulo.setText("TRON");
         titulo.setForeground(Color.red);
         titulo.setBounds(280, 310, 400, 120);
@@ -122,6 +142,8 @@ public class JuegoTron extends JFrame {
             titulo.setFont(sizedFont);
             //BotonEmpezar.setFont(sizedFontEstandar);
             nombrePersonaje.setFont(sizedFontEstandar);
+            puntuacion.setFont(sizedFontEstandar);
+            puntuacionEnemiga.setFont(sizedFontEstandar);
         } catch (FontFormatException ex) {
             System.err.println("error en font format");
         } catch (IOException ex) {
@@ -235,9 +257,11 @@ public class JuegoTron extends JFrame {
                 int numero = (int) (Math.random() * 2 + 1);
                 if (numero == 1) {
                     naveEnemiga = "asset/gray.png";
+                    puntuacionEnemiga.setForeground(Color.GRAY);
                     colorMovimiento = 3;
                 } else if (numero == 2) {
                     naveEnemiga = "asset/blue.png";
+                    puntuacionEnemiga.setForeground(Color.green);
                     colorMovimiento = 2;
                 }
                 System.out.println(numero);
@@ -250,6 +274,9 @@ public class JuegoTron extends JFrame {
                 matriz[5][20].add(imagen4);
                 //fin enemigo
 
+                puntuacion.setForeground(Color.red);
+                puntuacion.setVisible(true);
+                puntuacionEnemiga.setVisible(true);
                 timer.start();
 
             }
@@ -297,9 +324,11 @@ public class JuegoTron extends JFrame {
                 int numero = (int) (Math.random() * 2 + 1);
                 if (numero == 1) {
                     naveEnemiga = "asset/gray.png";
+                    puntuacionEnemiga.setForeground(Color.GRAY);
                     colorMovimiento = 3;
                 } else if (numero == 2) {
                     naveEnemiga = "asset/red.png";
+                    puntuacionEnemiga.setForeground(Color.RED);
                     colorMovimiento = 1;
                 }
                 System.out.println(numero);
@@ -312,6 +341,9 @@ public class JuegoTron extends JFrame {
                 matriz[5][20].add(imagen4);
                 //fin enemigo
 
+                puntuacion.setForeground(Color.GREEN);
+                puntuacion.setVisible(true);
+                puntuacionEnemiga.setVisible(true);
                 timer.start();
 
             }
@@ -361,9 +393,11 @@ public class JuegoTron extends JFrame {
                 int numero = (int) (Math.random() * 2 + 1);
                 if (numero == 1) {
                     naveEnemiga = "asset/red.png";
+                    puntuacionEnemiga.setForeground(Color.RED);
                     colorMovimiento = 1;
                 } else if (numero == 2) {
                     naveEnemiga = "asset/blue.png";
+                    puntuacionEnemiga.setForeground(Color.GREEN);
                     colorMovimiento = 2;
                 }
                 System.out.println(numero);
@@ -376,6 +410,9 @@ public class JuegoTron extends JFrame {
                 matriz[5][20].add(imagen4);
                 //fin enemigo
 
+                puntuacion.setForeground(Color.GRAY);
+                puntuacion.setVisible(true);
+                puntuacionEnemiga.setVisible(true);
                 timer.start();
 
             }
@@ -494,6 +531,8 @@ public class JuegoTron extends JFrame {
                                 estados[ejeX][ejeY].setEstado(true);
                             }
 
+                            sumador++;
+                            puntuacion.setText("Puntuacion: " + sumador);
                             Minave.setEjeY(derecha);
                             derechaM = true;
                             izquierdaM = false;
@@ -570,6 +609,8 @@ public class JuegoTron extends JFrame {
                                 estados[ejeX][ejeY].setEstado(true);
                             }
 
+                            sumador++;
+                            puntuacion.setText("Puntuacion: " + sumador);
                             Minave.setEjeY(izquierda);
                             derechaM = false;
                             izquierdaM = true;
@@ -646,6 +687,8 @@ public class JuegoTron extends JFrame {
                                 estados[ejeX][ejeY].setEstado(true);
                             }
 
+                            sumador++;
+                            puntuacion.setText("Puntuacion: " + sumador);
                             Minave.setEjeX(arriba);
                             derechaM = false;
                             izquierdaM = false;
@@ -722,6 +765,8 @@ public class JuegoTron extends JFrame {
                                 estados[ejeX][ejeY].setEstado(true);
                             }
 
+                            sumador++;
+                            puntuacion.setText("Puntuacion: " + sumador);
                             Minave.setEjeX(abajo);
                             derechaM = false;
                             izquierdaM = false;
@@ -807,6 +852,8 @@ public class JuegoTron extends JFrame {
                         estados[ejeX][ejeY].setEstado(true);
                     }
 
+                    sumador++;
+                    puntuacion.setText("Puntuacion: " + sumador);
                     Minave.setEjeY(derecha);
                     derechaM = true;
                     izquierdaM = false;
@@ -883,6 +930,8 @@ public class JuegoTron extends JFrame {
                         estados[ejeX][ejeY].setEstado(true);
                     }
 
+                    sumador++;
+                    puntuacion.setText("Puntuacion: " + sumador);
                     Minave.setEjeY(izquierda);
                     derechaM = false;
                     izquierdaM = true;
@@ -959,6 +1008,8 @@ public class JuegoTron extends JFrame {
                         estados[ejeX][ejeY].setEstado(true);
                     }
 
+                    sumador++;
+                    puntuacion.setText("Puntuacion: " + sumador);
                     Minave.setEjeX(arriba);
                     derechaM = false;
                     izquierdaM = false;
@@ -1035,6 +1086,8 @@ public class JuegoTron extends JFrame {
                         estados[ejeX][ejeY].setEstado(true);
                     }
 
+                    sumador++;
+                    puntuacion.setText("Puntuacion: " + sumador);
                     Minave.setEjeX(abajo);
                     derechaM = false;
                     izquierdaM = false;
@@ -1086,18 +1139,16 @@ public class JuegoTron extends JFrame {
             try {
                 Estado EstadoCritico = estados[ejeX][ejeY + 2];
                 Estado EstadoColision = estados[ejeX][ejeY + 1];
-                
+
                 Estado EstadoCriticoIzquierda = estados[ejeX][ejeY - 2];
                 Estado EstadoCriticoArriba = estados[ejeX - 2][ejeY];
                 Estado EstadoCriticoAbajo = estados[ejeX + 2][ejeY];
-                
-                
-                if(EstadoCritico.getEstado() && EstadoCriticoIzquierda.getEstado() && EstadoCriticoArriba.getEstado() && EstadoCriticoAbajo.getEstado() ){
-                    
+
+                if (EstadoCritico.getEstado() && EstadoCriticoIzquierda.getEstado() && EstadoCriticoArriba.getEstado() && EstadoCriticoAbajo.getEstado()) {
+
                     System.out.println("He morido");
-                    
-                    
-                }else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
+
+                } else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
                     System.out.println("toca parada y cambiar de movimiento");
                     do {
                         movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
@@ -1129,7 +1180,10 @@ public class JuegoTron extends JFrame {
                     } else if (colorMovimiento == 3) {
                         matriz[ejeX][ejeY].setBackground(Color.GRAY);
                     }
+                    
 
+                    sumadorEnemigo++;
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
                     estados[ejeX][ejeY].setEstado(true);
                     Mienemigo.setEjeY(derecha);
                     //cambiarMovimiento1++;
@@ -1140,6 +1194,7 @@ public class JuegoTron extends JFrame {
                 }
 
             } catch (ArrayIndexOutOfBoundsException excepcion) {
+                System.out.println("fuera");
                 System.out.println("toca parada y cambiar de movimiento");
                 do {
                     movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
@@ -1162,10 +1217,9 @@ public class JuegoTron extends JFrame {
                 Estado EstadoCriticoDerecha = estados[ejeX][ejeY + 2];
                 Estado EstadoCriticoArriba = estados[ejeX - 2][ejeY];
                 Estado EstadoCriticoAbajo = estados[ejeX + 2][ejeY];
-                
-                
-                if(EstadoCritico.getEstado() && EstadoCriticoDerecha.getEstado() && EstadoCriticoArriba.getEstado() && EstadoCriticoAbajo.getEstado() ){
-                    
+
+                if (EstadoCritico.getEstado() && EstadoCriticoDerecha.getEstado() && EstadoCriticoArriba.getEstado() && EstadoCriticoAbajo.getEstado()) {
+
                     System.out.println("He morido");
                     /*
                     matriz[ejeX][ejeY].removeAll();
@@ -1176,7 +1230,7 @@ public class JuegoTron extends JFrame {
                     imagen4.setIcon(icon);
                     imagen4.setBounds(0, 0, 22, 22);
                     matriz[ejeX][ejeY].add(imagen4);
-                    */
+                     */
                     //reseteamos panel derecho
                     matriz[ejeX][izquierda].removeAll();
                     matriz[ejeX][izquierda].repaint();
@@ -1200,9 +1254,9 @@ public class JuegoTron extends JFrame {
                     }
 
                     estados[ejeX][ejeY].setEstado(true);
-                    Mienemigo.setEjeY(izquierda);                                      
-                    
-                }else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
+                    Mienemigo.setEjeY(izquierda);
+
+                } else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
                     System.out.println("toca parada y cambiar de movimiento");
                     do {
                         movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
@@ -1235,6 +1289,8 @@ public class JuegoTron extends JFrame {
                         matriz[ejeX][ejeY].setBackground(Color.GRAY);
                     }
 
+                    sumadorEnemigo++;
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);                    
                     estados[ejeX][ejeY].setEstado(true);
                     Mienemigo.setEjeY(izquierda);
                     //cambiarMovimiento1++;
@@ -1246,12 +1302,15 @@ public class JuegoTron extends JFrame {
                 }
 
             } catch (ArrayIndexOutOfBoundsException excepcion) {
+                System.out.println("fuera");
+
                 System.out.println("toca parada y cambiar de movimiento");
                 do {
                     movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
                     System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
                 } while (movimientoNaveEnemigo == 2);
                 cambioDireccion = 0;
+
             }
 
         } else if (movimientoNaveEnemigo == 3) {
@@ -1297,6 +1356,8 @@ public class JuegoTron extends JFrame {
                         matriz[ejeX][ejeY].setBackground(Color.GRAY);
                     }
 
+                    sumadorEnemigo++;
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);  
                     estados[ejeX][ejeY].setEstado(true);
                     Mienemigo.setEjeX(arriba);
                     //cambiarMovimiento1++;
@@ -1308,11 +1369,13 @@ public class JuegoTron extends JFrame {
 
             } catch (ArrayIndexOutOfBoundsException excepcion) {
                 System.out.println("fuera");
+                               
                 do {
                     movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
                     System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
-                } while (movimientoNaveEnemigo == 3);
+                } while (movimientoNaveEnemigo == 3 );
                 cambioDireccion = 0;
+                 
             }
 
         } else if (movimientoNaveEnemigo == 4) {
@@ -1361,6 +1424,8 @@ public class JuegoTron extends JFrame {
                         matriz[ejeX][ejeY].setBackground(Color.GRAY);
                     }
 
+                    sumadorEnemigo++;
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);  
                     estados[ejeX][ejeY].setEstado(true);
                     Mienemigo.setEjeX(abajo);
                     //cambiarMovimiento1++;
@@ -1371,7 +1436,8 @@ public class JuegoTron extends JFrame {
                 }
 
             } catch (ArrayIndexOutOfBoundsException excepcion) {
-                System.out.println("toca parada y cambiar de movimiento");
+                System.out.println("fuera");
+                
                 System.out.println("toca parada y cambiar de movimiento");
                 do {
                     movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
@@ -1383,6 +1449,7 @@ public class JuegoTron extends JFrame {
         }
 
     }
+   
 
     /**
      * @param args the command line arguments
