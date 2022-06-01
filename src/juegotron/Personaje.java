@@ -13,11 +13,13 @@ public class Personaje {
     private int ejeX;
     private int ejeY;
     private String naveImg;
+    private boolean vivo;
 
-    public Personaje(int ejeX, int ejeY, String naveImg) {
+    public Personaje(int ejeX, int ejeY, String naveImg, boolean vivo) {
         this.ejeX = ejeX;
         this.ejeY = ejeY;
         this.naveImg = naveImg;
+        this.vivo = vivo;
     }
 
     public int getEjeX() {
@@ -43,6 +45,15 @@ public class Personaje {
     public void setNaveImg(String naveImg) {
         this.naveImg = naveImg;
     }
+
+    public boolean isVivo() {
+        return vivo;
+    }
+
+    public void setVivo(boolean vivo) {
+        this.vivo = vivo;
+    }
+
 
     
     

@@ -25,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -75,6 +76,7 @@ public class JuegoTron extends JFrame {
     Timer timer = new Timer(150, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            ganador();
             naveEnemiga();
             speed();
 
@@ -241,7 +243,7 @@ public class JuegoTron extends JFrame {
                 panelJuego.setVisible(true);
 
                 //nave
-                Minave = new Personaje(35, 20, Mipersonaje);
+                Minave = new Personaje(35, 20, Mipersonaje, true);
                 Minave.setNaveImg(Mipersonaje);
                 ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
                 Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
@@ -262,7 +264,7 @@ public class JuegoTron extends JFrame {
                     colorMovimiento = 2;
                 }
                 System.out.println(numero);
-                Mienemigo = new Enemigo(5, 20, naveEnemiga);
+                Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
                 Mienemigo.setNaveImg(naveEnemiga);
                 ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
                 Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
@@ -308,7 +310,7 @@ public class JuegoTron extends JFrame {
                 Mipersonaje = "asset/blue.png";
                 panelJuego.setVisible(true);
 
-                Minave = new Personaje(35, 20, Mipersonaje);
+                Minave = new Personaje(35, 20, Mipersonaje, true);
                 Minave.setNaveImg(Mipersonaje);
                 ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
                 Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
@@ -329,7 +331,7 @@ public class JuegoTron extends JFrame {
                     colorMovimiento = 1;
                 }
                 System.out.println(numero);
-                Mienemigo = new Enemigo(5, 20, naveEnemiga);
+                Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
                 Mienemigo.setNaveImg(naveEnemiga);
                 ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
                 Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
@@ -377,7 +379,7 @@ public class JuegoTron extends JFrame {
 
                 panelJuego.setVisible(true);
 
-                Minave = new Personaje(35, 20, Mipersonaje);
+                Minave = new Personaje(35, 20, Mipersonaje, true);
                 Minave.setNaveImg(Mipersonaje);
                 ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
                 Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
@@ -398,7 +400,7 @@ public class JuegoTron extends JFrame {
                     colorMovimiento = 2;
                 }
                 System.out.println(numero);
-                Mienemigo = new Enemigo(5, 20, naveEnemiga);
+                Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
                 Mienemigo.setNaveImg(naveEnemiga);
                 ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
                 Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
@@ -499,6 +501,8 @@ public class JuegoTron extends JFrame {
                             matriz[ejeX][ejeY].add(imagen);
                             //fin explosion
 
+                            Minave.setVivo(false);
+
                         } else {
 
                             //reseteamos panel derecho
@@ -547,6 +551,7 @@ public class JuegoTron extends JFrame {
                         imagen.setIcon(icon);
                         imagen.setBounds(0, 0, 22, 22);
                         matriz[ejeX][ejeY].add(imagen);
+                        Minave.setVivo(false);
 
                     } catch (ArithmeticException excepcion) {
                         System.out.println(" Error de índice en un array");
@@ -576,6 +581,7 @@ public class JuegoTron extends JFrame {
                             imagen.setBounds(0, 0, 22, 22);
                             matriz[ejeX][ejeY].add(imagen);
                             //fin explosion
+                            Minave.setVivo(false);
 
                         } else {
 
@@ -625,6 +631,7 @@ public class JuegoTron extends JFrame {
                         imagen.setIcon(icon);
                         imagen.setBounds(0, 0, 22, 22);
                         matriz[ejeX][ejeY].add(imagen);
+                        Minave.setVivo(false);
 
                     } catch (ArithmeticException excepcion) {
                         System.out.println(" Error de índice en un array");
@@ -654,6 +661,7 @@ public class JuegoTron extends JFrame {
                             imagen.setBounds(0, 0, 22, 22);
                             matriz[ejeX][ejeY].add(imagen);
                             //fin explosion
+                            Minave.setVivo(false);
 
                         } else {
 
@@ -703,6 +711,7 @@ public class JuegoTron extends JFrame {
                         imagen.setIcon(icon);
                         imagen.setBounds(0, 0, 22, 22);
                         matriz[ejeX][ejeY].add(imagen);
+                        Minave.setVivo(false);
 
                     } catch (ArithmeticException excepcion) {
                         System.out.println(" Error de índice en un array");
@@ -732,6 +741,7 @@ public class JuegoTron extends JFrame {
                             imagen.setBounds(0, 0, 22, 22);
                             matriz[ejeX][ejeY].add(imagen);
                             //fin explosion
+                            Minave.setVivo(false);
 
                         } else {
 
@@ -781,6 +791,7 @@ public class JuegoTron extends JFrame {
                         imagen.setIcon(icon);
                         imagen.setBounds(0, 0, 22, 22);
                         matriz[ejeX][ejeY].add(imagen);
+                        Minave.setVivo(false);
 
                     } catch (ArithmeticException excepcion) {
                         System.out.println(" Error de índice en un array");
@@ -818,6 +829,7 @@ public class JuegoTron extends JFrame {
                     imagen.setIcon(icon);
                     imagen.setBounds(0, 0, 22, 22);
                     matriz[ejeX][ejeY].add(imagen);
+                    Minave.setVivo(false);
                     //fin explosion
 
                 } else {
@@ -868,6 +880,7 @@ public class JuegoTron extends JFrame {
                 imagen.setIcon(icon);
                 imagen.setBounds(0, 0, 22, 22);
                 matriz[ejeX][ejeY].add(imagen);
+                Minave.setVivo(false);
 
             } catch (ArithmeticException excepcion) {
                 System.out.println(" Error de índice en un array");
@@ -896,6 +909,7 @@ public class JuegoTron extends JFrame {
                     imagen.setIcon(icon);
                     imagen.setBounds(0, 0, 22, 22);
                     matriz[ejeX][ejeY].add(imagen);
+                    Minave.setVivo(false);
                     //fin explosion
 
                 } else {
@@ -946,6 +960,7 @@ public class JuegoTron extends JFrame {
                 imagen.setIcon(icon);
                 imagen.setBounds(0, 0, 22, 22);
                 matriz[ejeX][ejeY].add(imagen);
+                Minave.setVivo(false);
 
             } catch (ArithmeticException excepcion) {
                 System.out.println(" Error de índice en un array");
@@ -974,6 +989,7 @@ public class JuegoTron extends JFrame {
                     imagen.setIcon(icon);
                     imagen.setBounds(0, 0, 22, 22);
                     matriz[ejeX][ejeY].add(imagen);
+                    Minave.setVivo(false);
                     //fin explosion
 
                 } else {
@@ -1024,6 +1040,7 @@ public class JuegoTron extends JFrame {
                 imagen.setIcon(icon);
                 imagen.setBounds(0, 0, 22, 22);
                 matriz[ejeX][ejeY].add(imagen);
+                Minave.setVivo(false);
 
             } catch (ArithmeticException excepcion) {
                 System.out.println(" Error de índice en un array");
@@ -1053,6 +1070,7 @@ public class JuegoTron extends JFrame {
                     imagen.setBounds(0, 0, 22, 22);
                     matriz[ejeX][ejeY].add(imagen);
                     //fin explosion
+                    Minave.setVivo(false);
 
                 } else {
 
@@ -1102,6 +1120,7 @@ public class JuegoTron extends JFrame {
                 imagen.setIcon(icon);
                 imagen.setBounds(0, 0, 22, 22);
                 matriz[ejeX][ejeY].add(imagen);
+                Minave.setVivo(false);
 
             } catch (ArithmeticException excepcion) {
                 System.out.println(" Error de índice en un array");
@@ -1143,7 +1162,11 @@ public class JuegoTron extends JFrame {
                 Estado EstadoCriticoArriba = estados[ejeX - 2][ejeY];
                 Estado EstadoCriticoAbajo = estados[ejeX + 2][ejeY];
 
-                if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
+                if (EstadoCriticoIzquierda.getEstado() && EstadoCriticoArriba.getEstado() && EstadoCriticoAbajo.getEstado()) {
+
+                    System.out.println("muerto");
+
+                } else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
 
                     do {
                         movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
@@ -1250,7 +1273,11 @@ public class JuegoTron extends JFrame {
                 Estado EstadoCriticoArriba = estados[ejeX - 2][ejeY];
                 Estado EstadoCriticoAbajo = estados[ejeX + 2][ejeY];
 
-                if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
+                if (EstadoCriticoDerecha.getEstado() && EstadoCriticoArriba.getEstado() && EstadoCriticoAbajo.getEstado()) {
+
+                    System.out.println("muerto");
+
+                } else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
 
                     do {
                         movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
@@ -1353,7 +1380,15 @@ public class JuegoTron extends JFrame {
                 Estado EstadoCritico = estados[ejeX - 2][ejeY];
                 Estado EstadoColision = estados[ejeX - 1][ejeY];
 
-                if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
+                Estado EstadoCriticoIzquierda = estados[ejeX][ejeY - 2];
+                Estado EstadoCriticoDerecha = estados[ejeX][ejeY + 2];
+                Estado EstadoCriticoAbajo = estados[ejeX + 2][ejeY];
+
+                if (EstadoCriticoIzquierda.getEstado() && EstadoCriticoDerecha.getEstado() && EstadoCriticoAbajo.getEstado()) {
+
+                    System.out.println("muerto");
+
+                } else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
 
                     do {
                         movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
@@ -1456,7 +1491,15 @@ public class JuegoTron extends JFrame {
                 Estado EstadoCritico = estados[ejeX + 2][ejeY];
                 Estado EstadoColision = estados[ejeX + 1][ejeY];
 
-                if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
+                Estado EstadoCriticoIzquierda = estados[ejeX][ejeY - 2];
+                Estado EstadoCriticoDerecha = estados[ejeX][ejeY + 2];
+                Estado EstadoCriticoArriba = estados[ejeX - 2][ejeY];
+
+                if (EstadoCriticoIzquierda.getEstado() && EstadoCriticoDerecha.getEstado() && EstadoCriticoArriba.getEstado()) {
+
+                    System.out.println("muerto");
+
+                } else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
 
                     do {
                         movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
@@ -1545,6 +1588,40 @@ public class JuegoTron extends JFrame {
 
             } finally {
                 System.out.println("fuera del catch");
+            }
+
+        }
+
+    }
+
+    public void ganador() {
+            
+        String[] botones = { "Salir."};
+        
+        if (Minave.isVivo() == false) {
+            
+            int ventana = JOptionPane.showOptionDialog(null,
+                    "Has perdido",
+                    "TRON",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null,
+                    botones, botones[0]);
+
+             if (ventana == 0) {
+                System.exit(0);
+            }
+
+        } else if (Mienemigo.isVivo() == false) {
+            
+            int ventana = JOptionPane.showOptionDialog(null,
+                    "Has perdido",
+                    "TRON",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null,
+                    botones, botones[0]);
+
+             if (ventana == 0) {
+                System.exit(0);
             }
 
         }
