@@ -34,7 +34,7 @@ import javax.swing.Timer;
  */
 public class JuegoTron extends JFrame {
 
-    JLabel fondoMenuPrincipal, titulo, nombrePersonaje, puntuacion , puntuacionEnemiga;
+    JLabel fondoMenuPrincipal, titulo, nombrePersonaje, puntuacion, puntuacionEnemiga;
     JLabel imagen, imagen2, imagen3, imagen4;
     JButton BotonEmpezar;
     JPanel PanelPersonajes, panelJuego;
@@ -45,7 +45,7 @@ public class JuegoTron extends JFrame {
 
     int sumador = 0;
     int sumadorEnemigo = 0;
-    
+
     //enemigo
     Enemigo Mienemigo;
     String naveEnemiga;
@@ -108,23 +108,19 @@ public class JuegoTron extends JFrame {
         this.setLayout(null);
 
         titulo = new JLabel();
-        
-        
-        
+
         puntuacion = new JLabel();
         puntuacion.setText("Puntuacion: " + sumador);
         puntuacion.setBounds(50, 65, 300, 50);
         this.add(puntuacion);
         puntuacion.setVisible(false);
-        
+
         puntuacionEnemiga = new JLabel();
         puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
         puntuacionEnemiga.setBounds(510, 65, 300, 50);
         this.add(puntuacionEnemiga);
         puntuacionEnemiga.setVisible(false);
-        
-        
-        
+
         titulo.setText("TRON");
         titulo.setForeground(Color.red);
         titulo.setBounds(280, 310, 400, 120);
@@ -1124,12 +1120,14 @@ public class JuegoTron extends JFrame {
         3 --> arriba
         4 --> abajo
          */
+        System.out.println("X: " + Mienemigo.getEjeX() + " Y: " + Mienemigo.getEjeY());
 
+        //if(Mienemigo.getEjeX() == 0 || Mienemigo.getEjeY() == 39 || Mienemigo.getEjeY() == 0 || Mienemigo.getEjeX() == 39  ){} 
         if (cambioDireccion == 0) {
             movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
         }
-        //System.out.println(movimientoEnemigo1);
 
+        //System.out.println(movimientoEnemigo1);
         //movimientoNaveEnemigo = 4;
         if (movimientoNaveEnemigo == 1) {
             int ejeX = Mienemigo.getEjeX();
@@ -1145,18 +1143,13 @@ public class JuegoTron extends JFrame {
                 Estado EstadoCriticoArriba = estados[ejeX - 2][ejeY];
                 Estado EstadoCriticoAbajo = estados[ejeX + 2][ejeY];
 
-                if (EstadoCritico.getEstado() && EstadoCriticoIzquierda.getEstado() && EstadoCriticoArriba.getEstado() && EstadoCriticoAbajo.getEstado()) {
+                if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
 
-                    System.out.println("He morido");
-
-                } else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
-                    System.out.println("toca parada y cambiar de movimiento");
                     do {
                         movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
-                        System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+
                     } while (movimientoNaveEnemigo == 1);
                     cambioDireccion = 0;
-                    System.out.println("toca parada y cambiar de movimiento");
 
                 } else {
 
@@ -1181,7 +1174,6 @@ public class JuegoTron extends JFrame {
                     } else if (colorMovimiento == 3) {
                         matriz[ejeX][ejeY].setBackground(Color.GRAY);
                     }
-                    
 
                     sumadorEnemigo++;
                     puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
@@ -1195,13 +1187,52 @@ public class JuegoTron extends JFrame {
                 }
 
             } catch (ArrayIndexOutOfBoundsException excepcion) {
-                System.out.println("fuera");
-                System.out.println("toca parada y cambiar de movimiento");
+                System.out.println("fuera de la matriz derecha");
+                /*do {
+                    movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                    System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                } while (movimientoNaveEnemigo == 1);*/
+                //cambioDireccion = 0;
+
+                //reseteamos panel derecho
+                matriz[ejeX][derecha].removeAll();
+                matriz[ejeX][derecha].repaint();
+                JLabel imagen = new JLabel();
+                ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[ejeX][derecha].add(imagen);
+                matriz[ejeX][derecha].setBackground(Color.black);
+                //elimina todo la posicion actual donde esta el pacman
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+
+                if (colorMovimiento == 1) {
+                    matriz[ejeX][ejeY].setBackground(Color.RED);
+                } else if (colorMovimiento == 2) {
+                    matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                } else if (colorMovimiento == 3) {
+                    matriz[ejeX][ejeY].setBackground(Color.GRAY);
+                }
+
+                sumadorEnemigo++;
+                puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
+                estados[ejeX][ejeY].setEstado(true);
+                Mienemigo.setEjeY(derecha);
+                //cambiarMovimiento1++;
+                cambioDireccion++;
+                //if (cambioDireccion == 6) {
+                //cambioDireccion = 0;
+                //}
+
                 do {
                     movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
                     System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
-                } while (movimientoNaveEnemigo == 1);
-                cambioDireccion = 0;
+                } while (movimientoNaveEnemigo == 2 || movimientoNaveEnemigo == 1);
+
+            } finally {
+                System.out.println("fuera del catch");
             }
 
         } else if (movimientoNaveEnemigo == 2) {
@@ -1219,52 +1250,13 @@ public class JuegoTron extends JFrame {
                 Estado EstadoCriticoArriba = estados[ejeX - 2][ejeY];
                 Estado EstadoCriticoAbajo = estados[ejeX + 2][ejeY];
 
-                if (EstadoCritico.getEstado() && EstadoCriticoDerecha.getEstado() && EstadoCriticoArriba.getEstado() && EstadoCriticoAbajo.getEstado()) {
+                if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
 
-                    System.out.println("He morido");
-                    /*
-                    matriz[ejeX][ejeY].removeAll();
-                    matriz[ejeX][ejeY].repaint();
-                    Mienemigo.setNaveImg("asset/explosion.png");
-                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
-                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                    imagen4.setIcon(icon);
-                    imagen4.setBounds(0, 0, 22, 22);
-                    matriz[ejeX][ejeY].add(imagen4);
-                     */
-                    //reseteamos panel derecho
-                    matriz[ejeX][izquierda].removeAll();
-                    matriz[ejeX][izquierda].repaint();
-                    JLabel imagen = new JLabel();
-                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
-                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                    imagen.setIcon(icon);
-                    imagen.setBounds(0, 0, 22, 22);
-                    matriz[ejeX][izquierda].add(imagen);
-                    matriz[ejeX][izquierda].setBackground(Color.black);
-                    //elimina todo la posicion actual donde esta el pacman
-                    matriz[ejeX][ejeY].removeAll();
-                    matriz[ejeX][ejeY].repaint();
-
-                    if (colorMovimiento == 1) {
-                        matriz[ejeX][ejeY].setBackground(Color.RED);
-                    } else if (colorMovimiento == 2) {
-                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
-                    } else if (colorMovimiento == 3) {
-                        matriz[ejeX][ejeY].setBackground(Color.GRAY);
-                    }
-
-                    estados[ejeX][ejeY].setEstado(true);
-                    Mienemigo.setEjeY(izquierda);
-
-                } else if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
-                    System.out.println("toca parada y cambiar de movimiento");
                     do {
                         movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
-                        System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+
                     } while (movimientoNaveEnemigo == 2);
                     cambioDireccion = 0;
-                    System.out.println("toca parada y cambiar de movimiento");
 
                 } else {
 
@@ -1291,7 +1283,7 @@ public class JuegoTron extends JFrame {
                     }
 
                     sumadorEnemigo++;
-                    puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);                    
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
                     estados[ejeX][ejeY].setEstado(true);
                     Mienemigo.setEjeY(izquierda);
                     //cambiarMovimiento1++;
@@ -1303,15 +1295,51 @@ public class JuegoTron extends JFrame {
                 }
 
             } catch (ArrayIndexOutOfBoundsException excepcion) {
-                System.out.println("fuera");
+                System.out.println("fuera de la matriz izquierda");
+                /*do {
+                    movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                    
+                } while (movimientoNaveEnemigo == 2);*/
+                //cambioDireccion = 0;
 
-                System.out.println("toca parada y cambiar de movimiento");
+                matriz[ejeX][izquierda].removeAll();
+                matriz[ejeX][izquierda].repaint();
+                JLabel imagen = new JLabel();
+                ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[ejeX][izquierda].add(imagen);
+                matriz[ejeX][izquierda].setBackground(Color.black);
+                //elimina todo la posicion actual donde esta el pacman
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+
+                if (colorMovimiento == 1) {
+                    matriz[ejeX][ejeY].setBackground(Color.RED);
+                } else if (colorMovimiento == 2) {
+                    matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                } else if (colorMovimiento == 3) {
+                    matriz[ejeX][ejeY].setBackground(Color.GRAY);
+                }
+
+                sumadorEnemigo++;
+                puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
+                estados[ejeX][ejeY].setEstado(true);
+                Mienemigo.setEjeY(izquierda);
+                //cambiarMovimiento1++;
+
+                cambioDireccion++;
+                //if (cambioDireccion == 6) {
+                //cambioDireccion = 0;
+                //}
                 do {
                     movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
                     System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
-                } while (movimientoNaveEnemigo == 2);
-                cambioDireccion = 0;
+                } while (movimientoNaveEnemigo == 2 || movimientoNaveEnemigo == 1);
 
+            } finally {
+                System.out.println("fuera del catch");
             }
 
         } else if (movimientoNaveEnemigo == 3) {
@@ -1326,10 +1354,10 @@ public class JuegoTron extends JFrame {
                 Estado EstadoColision = estados[ejeX - 1][ejeY];
 
                 if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
-                    System.out.println("toca parada y cambiar de movimiento");
+
                     do {
                         movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
-                        System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+
                     } while (movimientoNaveEnemigo == 3);
                     cambioDireccion = 0;
 
@@ -1358,7 +1386,7 @@ public class JuegoTron extends JFrame {
                     }
 
                     sumadorEnemigo++;
-                    puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);  
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
                     estados[ejeX][ejeY].setEstado(true);
                     Mienemigo.setEjeX(arriba);
                     //cambiarMovimiento1++;
@@ -1369,14 +1397,52 @@ public class JuegoTron extends JFrame {
                 }
 
             } catch (ArrayIndexOutOfBoundsException excepcion) {
-                System.out.println("fuera");
-                               
+                System.out.println("fuera de la matriz arriba");
+
+                /*do {
+                    movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                    System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                } while (movimientoNaveEnemigo == 3 || movimientoNaveEnemigo == 4 );*/
+                //cambioDireccion = 0;
+                //reseteamos panel derecho
+                matriz[arriba][ejeY].removeAll();
+                matriz[arriba][ejeY].repaint();
+                JLabel imagen = new JLabel();
+                ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[arriba][ejeY].add(imagen);
+                matriz[arriba][ejeY].setBackground(Color.black);
+                //elimina todo la posicion actual donde esta el pacman
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+
+                if (colorMovimiento == 1) {
+                    matriz[ejeX][ejeY].setBackground(Color.RED);
+                } else if (colorMovimiento == 2) {
+                    matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                } else if (colorMovimiento == 3) {
+                    matriz[ejeX][ejeY].setBackground(Color.GRAY);
+                }
+
+                sumadorEnemigo++;
+                puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
+                estados[ejeX][ejeY].setEstado(true);
+                Mienemigo.setEjeX(arriba);
+                //cambiarMovimiento1++;
+                cambioDireccion++;
+                //if (cambioDireccion == 6) {
+                //cambioDireccion = 0;
+                //}
+
                 do {
                     movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
                     System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
-                } while (movimientoNaveEnemigo == 3 );
-                cambioDireccion = 0;
-                 
+                } while (movimientoNaveEnemigo == 4 || movimientoNaveEnemigo == 3);
+
+            } finally {
+                System.out.println("fuera del catch");
             }
 
         } else if (movimientoNaveEnemigo == 4) {
@@ -1392,14 +1458,11 @@ public class JuegoTron extends JFrame {
 
                 if (EstadoCritico.getEstado() || EstadoColision.getEstado()) {
 
-                    System.out.println("toca parada y cambiar de movimiento");
                     do {
                         movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
                         System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
                     } while (movimientoNaveEnemigo == 4);
                     cambioDireccion = 0;
-
-                    System.out.println("toca parada y cambiar de movimiento");
 
                 } else {
 
@@ -1426,7 +1489,7 @@ public class JuegoTron extends JFrame {
                     }
 
                     sumadorEnemigo++;
-                    puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);  
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
                     estados[ejeX][ejeY].setEstado(true);
                     Mienemigo.setEjeX(abajo);
                     //cambiarMovimiento1++;
@@ -1437,20 +1500,56 @@ public class JuegoTron extends JFrame {
                 }
 
             } catch (ArrayIndexOutOfBoundsException excepcion) {
-                System.out.println("fuera");
-                
-                System.out.println("toca parada y cambiar de movimiento");
+                System.out.println("fuera de la matriz abajo");
+                /*do {
+                    movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
+                    System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
+                } while (movimientoNaveEnemigo == 4 || movimientoNaveEnemigo == 3 );*/
+                //cambioDireccion = 0;
+
+                //reseteamos panel derecho
+                matriz[abajo][ejeY].removeAll();
+                matriz[abajo][ejeY].repaint();
+                JLabel imagen = new JLabel();
+                ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[abajo][ejeY].add(imagen);
+                matriz[abajo][ejeY].setBackground(Color.black);
+                //elimina todo la posicion actual donde esta el pacman
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+
+                if (colorMovimiento == 1) {
+                    matriz[ejeX][ejeY].setBackground(Color.RED);
+                } else if (colorMovimiento == 2) {
+                    matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                } else if (colorMovimiento == 3) {
+                    matriz[ejeX][ejeY].setBackground(Color.GRAY);
+                }
+
+                sumadorEnemigo++;
+                puntuacionEnemiga.setText("Puntuacion: " + sumadorEnemigo);
+                estados[ejeX][ejeY].setEstado(true);
+                Mienemigo.setEjeX(abajo);
+                //cambiarMovimiento1++;
+                cambioDireccion++;
+                //if (cambioDireccion == 6) {
+                //cambioDireccion = 0;
+                //}
                 do {
                     movimientoNaveEnemigo = (int) Math.floor(Math.random() * 4 + 1);
                     System.out.println("cambio movimiento:" + movimientoNaveEnemigo);
-                } while (movimientoNaveEnemigo == 4);
-                cambioDireccion = 0;
+                } while (movimientoNaveEnemigo == 4 || movimientoNaveEnemigo == 3);
+
+            } finally {
+                System.out.println("fuera del catch");
             }
 
         }
 
     }
-   
 
     /**
      * @param args the command line arguments
