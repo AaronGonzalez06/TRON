@@ -35,7 +35,7 @@ import javax.swing.Timer;
  */
 public class JuegoTron extends JFrame {
 
-    JLabel fondoMenuPrincipal, titulo, nombrePersonaje, puntuacion, puntuacionEnemiga;
+    JLabel fondoMenuPrincipal, titulo, nombrePersonaje, puntuacion, puntuacionEnemiga, unJugador, dosJugadores, VS;
     JLabel imagen, imagen2, imagen3, imagen4;
     JButton BotonEmpezar;
     JPanel PanelPersonajes, panelJuego;
@@ -46,6 +46,8 @@ public class JuegoTron extends JFrame {
 
     int sumador = 0;
     int sumadorEnemigo = 0;
+    int sumadorSegundoJugador = 0;
+    int comenzar;
 
     //enemigo
     Enemigo Mienemigo;
@@ -73,6 +75,19 @@ public class JuegoTron extends JFrame {
     boolean arribaM = false;
     boolean abajoM = false;
 
+    //movimientos personaje 2
+    boolean derechaM2 = false;
+    boolean izquierdaM2 = false;
+    boolean arribaM2 = false;
+    boolean abajoM2 = false;
+
+    //modo de juego
+    int modoJuego;
+
+    //Jugadores
+    boolean primerJugador = false;
+    boolean segundoJugador = false;
+
     Timer timer = new Timer(150, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -83,13 +98,25 @@ public class JuegoTron extends JFrame {
         }
     });
 
+    Timer jugadaDos = new Timer(150, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ganador();
+            speed();
+            speedSegundoPersonaje();
+
+        }
+    });
+
     public JuegoTron() {
         crearVentana();
         //boton();
+        modoJuego();
         panelPersonajes();
         panelJuego();
         fondo();
         logica();
+        logicaPersonaje2();
         accionesBotones();
         fuente();
         //timer.start();
@@ -143,6 +170,9 @@ public class JuegoTron extends JFrame {
             nombrePersonaje.setFont(sizedFontEstandar);
             puntuacion.setFont(sizedFontEstandar);
             puntuacionEnemiga.setFont(sizedFontEstandar);
+            unJugador.setFont(sizedFontEstandar);
+            dosJugadores.setFont(sizedFontEstandar);
+            // VS.setFont(sizedFontEstandar);
         } catch (FontFormatException ex) {
             System.err.println("error en font format");
         } catch (IOException ex) {
@@ -171,6 +201,88 @@ public class JuegoTron extends JFrame {
         BotonEmpezar.setForeground(Color.red);
         BotonEmpezar.setBounds(320, 400, 110, 20);
         this.add(BotonEmpezar);
+
+    }
+
+    public void modoJuego() {
+
+        unJugador = new JLabel();
+        dosJugadores = new JLabel();
+
+        unJugador.setText("Un jugador");
+        dosJugadores.setText("Dos jugadores");
+
+        unJugador.setForeground(Color.red);
+        dosJugadores.setForeground(Color.red);
+
+        unJugador.setBounds(230, 395, 200, 50);
+        dosJugadores.setBounds(420, 395, 200, 50);
+
+        this.add(unJugador);
+        this.add(dosJugadores);
+
+        /*VS = new JLabel();
+        VS.setText("VS");
+        VS.setForeground(Color.red);
+        VS.setBounds(340, 525, 250, 50);
+        this.add(VS);
+        VS.setVisible(false);*/
+        unJugador.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                unJugador.setVisible(false);
+                dosJugadores.setVisible(false);
+                PanelPersonajes.setVisible(true);
+                modoJuego = 0;
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+        dosJugadores.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                unJugador.setVisible(false);
+                dosJugadores.setVisible(false);
+                PanelPersonajes.setVisible(true);
+                modoJuego = 1;
+                //VS.setVisible(true);
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
 
     }
 
@@ -217,8 +329,7 @@ public class JuegoTron extends JFrame {
         nombrePersonaje.setBounds(350, 490, 300, 50);
         this.add(nombrePersonaje);
 
-        PanelPersonajes.setVisible(true);
-
+        //PanelPersonajes.setVisible(true);
     }
 
     public void accionesBotones() {
@@ -233,50 +344,100 @@ public class JuegoTron extends JFrame {
         imagen.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                PanelPersonajes.setVisible(false);
-                //BotonEmpezar.setVisible(false);
-                PanelPersonajes.setVisible(false);
-                titulo.setVisible(false);
-                nombrePersonaje.setVisible(false);
-                Mipersonaje = "asset/red.png";
-                //System.out.println(Mipersonaje);
-                panelJuego.setVisible(true);
 
-                //nave
-                Minave = new Personaje(35, 20, Mipersonaje, true);
-                Minave.setNaveImg(Mipersonaje);
-                ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                imagen.setIcon(icon);
-                imagen.setBounds(0, 0, 22, 22);
-                matriz[35][20].add(imagen);
+                if (modoJuego == 0) {
 
-                //enemigo
-                imagen4 = new JLabel();
-                int numero = (int) (Math.random() * 2 + 1);
-                if (numero == 1) {
-                    naveEnemiga = "asset/gray.png";
-                    puntuacionEnemiga.setForeground(Color.GRAY);
-                    colorMovimiento = 3;
-                } else if (numero == 2) {
-                    naveEnemiga = "asset/blue.png";
-                    puntuacionEnemiga.setForeground(Color.green);
-                    colorMovimiento = 2;
+                    PanelPersonajes.setVisible(false);
+                    //BotonEmpezar.setVisible(false);
+                    PanelPersonajes.setVisible(false);
+                    titulo.setVisible(false);
+                    nombrePersonaje.setVisible(false);
+                    Mipersonaje = "asset/red.png";
+                    //System.out.println(Mipersonaje);
+                    panelJuego.setVisible(true);
+
+                    //nave
+                    Minave = new Personaje(35, 20, Mipersonaje, true);
+                    Minave.setNaveImg(Mipersonaje);
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    //imagen.setIcon(icon);
+                    //imagen.setBounds(0, 0, 22, 22);
+                    matriz[35][20].add(imagen);
+
+                    //enemigo
+                    imagen4 = new JLabel();
+                    int numero = (int) (Math.random() * 2 + 1);
+                    if (numero == 1) {
+                        naveEnemiga = "asset/gray.png";
+                        puntuacionEnemiga.setForeground(Color.GRAY);
+                        colorMovimiento = 3;
+                    } else if (numero == 2) {
+                        naveEnemiga = "asset/blue.png";
+                        puntuacionEnemiga.setForeground(Color.green);
+                        colorMovimiento = 2;
+                    }
+                    System.out.println(numero);
+                    Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
+                    Mienemigo.setNaveImg(naveEnemiga);
+                    ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen4.setIcon(iconEnemigo);
+                    imagen4.setBounds(0, 0, 22, 22);
+                    matriz[5][20].add(imagen4);
+                    //fin enemigo
+
+                    puntuacion.setForeground(Color.red);
+                    puntuacion.setVisible(true);
+                    puntuacionEnemiga.setVisible(true);
+
+                    timer.start();
+
+                } else if (modoJuego == 1) {
+
+                    if (primerJugador == false) {
+
+                        Mipersonaje = "asset/red.png";
+                        Minave = new Personaje(35, 20, Mipersonaje, true);
+                        Minave.setNaveImg(Mipersonaje);
+                        //ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        //Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));                        
+                        //matriz[35][20].add(imagen);
+                        puntuacion.setForeground(Color.red);
+                        primerJugador = true;
+
+                    } else if (segundoJugador == false) {
+
+                        imagen4 = new JLabel();
+                        naveEnemiga = "asset/red.png";
+                        puntuacionEnemiga.setForeground(Color.RED);
+                        colorMovimiento = 1;
+                        Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
+                        Mienemigo.setNaveImg(naveEnemiga);
+                        ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
+                        Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen4.setIcon(iconEnemigo);
+                        imagen4.setBounds(0, 0, 22, 22);
+                        matriz[5][20].add(imagen4);
+
+                        PanelPersonajes.setVisible(false);
+                        PanelPersonajes.setVisible(false);
+                        titulo.setVisible(false);
+                        nombrePersonaje.setVisible(false);
+                        panelJuego.setVisible(true);
+                        
+                        puntuacion.setVisible(true);
+                        puntuacionEnemiga.setVisible(true);
+                        
+                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));    
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[35][20].add(imagen);
+                        jugadaDos.start();
+
+                    }
                 }
-                System.out.println(numero);
-                Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
-                Mienemigo.setNaveImg(naveEnemiga);
-                ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
-                Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                imagen4.setIcon(iconEnemigo);
-                imagen4.setBounds(0, 0, 22, 22);
-                matriz[5][20].add(imagen4);
-                //fin enemigo
-
-                puntuacion.setForeground(Color.red);
-                puntuacion.setVisible(true);
-                puntuacionEnemiga.setVisible(true);
-                timer.start();
 
             }
 
@@ -302,48 +463,100 @@ public class JuegoTron extends JFrame {
         imagen2.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                PanelPersonajes.setVisible(false);
-                //BotonEmpezar.setVisible(false);
-                PanelPersonajes.setVisible(false);
-                titulo.setVisible(false);
-                nombrePersonaje.setVisible(false);
-                Mipersonaje = "asset/blue.png";
-                panelJuego.setVisible(true);
 
-                Minave = new Personaje(35, 20, Mipersonaje, true);
-                Minave.setNaveImg(Mipersonaje);
-                ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                imagen.setIcon(icon);
-                imagen.setBounds(0, 0, 22, 22);
-                matriz[35][20].add(imagen);
+                if (modoJuego == 0) {
 
-                //enemigo
-                imagen4 = new JLabel();
-                int numero = (int) (Math.random() * 2 + 1);
-                if (numero == 1) {
-                    naveEnemiga = "asset/gray.png";
-                    puntuacionEnemiga.setForeground(Color.GRAY);
-                    colorMovimiento = 3;
-                } else if (numero == 2) {
-                    naveEnemiga = "asset/red.png";
-                    puntuacionEnemiga.setForeground(Color.RED);
-                    colorMovimiento = 1;
+                    PanelPersonajes.setVisible(false);
+                    //BotonEmpezar.setVisible(false);
+                    PanelPersonajes.setVisible(false);
+                    titulo.setVisible(false);
+                    nombrePersonaje.setVisible(false);
+                    Mipersonaje = "asset/blue.png";
+                    panelJuego.setVisible(true);
+
+                    Minave = new Personaje(35, 20, Mipersonaje, true);
+                    Minave.setNaveImg(Mipersonaje);
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    //imagen.setIcon(icon);
+                    //imagen.setBounds(0, 0, 22, 22);
+                    matriz[35][20].add(imagen2);
+
+                    //enemigo
+                    imagen4 = new JLabel();
+                    int numero = (int) (Math.random() * 2 + 1);
+                    if (numero == 1) {
+                        naveEnemiga = "asset/gray.png";
+                        puntuacionEnemiga.setForeground(Color.GRAY);
+                        colorMovimiento = 3;
+                    } else if (numero == 2) {
+                        naveEnemiga = "asset/red.png";
+                        puntuacionEnemiga.setForeground(Color.RED);
+                        colorMovimiento = 1;
+                    }
+                    System.out.println(numero);
+                    Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
+                    Mienemigo.setNaveImg(naveEnemiga);
+                    ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen4.setIcon(iconEnemigo);
+                    imagen4.setBounds(0, 0, 22, 22);
+                    matriz[5][20].add(imagen4);
+                    //fin enemigo
+
+                    puntuacion.setForeground(Color.GREEN);
+                    puntuacion.setVisible(true);
+                    puntuacionEnemiga.setVisible(true);
+
+                    timer.start();
+
+                } else if (modoJuego == 1) {
+
+                    if (primerJugador == false) {
+
+                        Mipersonaje = "asset/blue.png";
+                        Minave = new Personaje(35, 20, Mipersonaje, true);
+                        Minave.setNaveImg(Mipersonaje);
+                        //ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        //Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        //matriz[35][20].add(imagen);
+                        puntuacion.setForeground(Color.GREEN);
+
+                        primerJugador = true;
+
+                    } else if (segundoJugador == false) {
+
+                        imagen4 = new JLabel();
+                        naveEnemiga = "asset/blue.png";
+                        puntuacionEnemiga.setForeground(Color.GREEN);
+                        colorMovimiento = 2;
+                        Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
+                        Mienemigo.setNaveImg(naveEnemiga);
+                        ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
+                        Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen4.setIcon(iconEnemigo);
+                        imagen4.setBounds(0, 0, 22, 22);
+                        matriz[5][20].add(imagen4);
+
+                        PanelPersonajes.setVisible(false);
+                        PanelPersonajes.setVisible(false);
+                        titulo.setVisible(false);
+                        nombrePersonaje.setVisible(false);
+                        panelJuego.setVisible(true);                        
+                        puntuacion.setVisible(true);
+                        puntuacionEnemiga.setVisible(true);
+                        
+                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));    
+                        imagen2.setIcon(icon);
+                        imagen2.setBounds(0, 0, 22, 22);
+                        matriz[35][20].add(imagen2);
+                        matriz[35][20].add(imagen2);
+                        jugadaDos.start();
+
+                    }
+
                 }
-                System.out.println(numero);
-                Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
-                Mienemigo.setNaveImg(naveEnemiga);
-                ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
-                Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                imagen4.setIcon(iconEnemigo);
-                imagen4.setBounds(0, 0, 22, 22);
-                matriz[5][20].add(imagen4);
-                //fin enemigo
-
-                puntuacion.setForeground(Color.GREEN);
-                puntuacion.setVisible(true);
-                puntuacionEnemiga.setVisible(true);
-                timer.start();
 
             }
 
@@ -369,50 +582,102 @@ public class JuegoTron extends JFrame {
         imagen3.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                PanelPersonajes.setVisible(false);
-                //BotonEmpezar.setVisible(false);
-                PanelPersonajes.setVisible(false);
-                titulo.setVisible(false);
-                nombrePersonaje.setVisible(false);
-                Mipersonaje = "asset/gray.png";
-                System.out.print(Mipersonaje);
 
-                panelJuego.setVisible(true);
+                if (modoJuego == 0) {
 
-                Minave = new Personaje(35, 20, Mipersonaje, true);
-                Minave.setNaveImg(Mipersonaje);
-                ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                imagen.setIcon(icon);
-                imagen.setBounds(0, 0, 22, 22);
-                matriz[35][20].add(imagen);
+                    PanelPersonajes.setVisible(false);
+                    //BotonEmpezar.setVisible(false);
+                    PanelPersonajes.setVisible(false);
+                    titulo.setVisible(false);
+                    nombrePersonaje.setVisible(false);
+                    Mipersonaje = "asset/gray.png";
+                    System.out.print(Mipersonaje);
 
-                //enemigo
-                imagen4 = new JLabel();
-                int numero = (int) (Math.random() * 2 + 1);
-                if (numero == 1) {
-                    naveEnemiga = "asset/red.png";
-                    puntuacionEnemiga.setForeground(Color.RED);
-                    colorMovimiento = 1;
-                } else if (numero == 2) {
-                    naveEnemiga = "asset/blue.png";
-                    puntuacionEnemiga.setForeground(Color.GREEN);
-                    colorMovimiento = 2;
+                    panelJuego.setVisible(true);
+
+                    Minave = new Personaje(35, 20, Mipersonaje, true);
+                    Minave.setNaveImg(Mipersonaje);
+                    ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    //imagen.setIcon(icon);
+                    //imagen.setBounds(0, 0, 22, 22);
+                    matriz[35][20].add(imagen3);
+
+                    //enemigo
+                    imagen4 = new JLabel();
+                    int numero = (int) (Math.random() * 2 + 1);
+                    if (numero == 1) {
+                        naveEnemiga = "asset/red.png";
+                        puntuacionEnemiga.setForeground(Color.RED);
+                        colorMovimiento = 1;
+                    } else if (numero == 2) {
+                        naveEnemiga = "asset/blue.png";
+                        puntuacionEnemiga.setForeground(Color.GREEN);
+                        colorMovimiento = 2;
+                    }
+                    System.out.println(numero);
+                    Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
+                    Mienemigo.setNaveImg(naveEnemiga);
+                    ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen4.setIcon(iconEnemigo);
+                    imagen4.setBounds(0, 0, 22, 22);
+                    matriz[5][20].add(imagen4);
+                    //fin enemigo
+
+                    puntuacion.setForeground(Color.GRAY);
+                    puntuacion.setVisible(true);
+                    puntuacionEnemiga.setVisible(true);
+
+                    timer.start();
+
+                } else if (modoJuego == 1) {
+
+                    if (primerJugador == false) {
+
+                        Mipersonaje = "asset/gray.png";
+                        Minave = new Personaje(35, 20, Mipersonaje, true);
+                        Minave.setNaveImg(Mipersonaje);
+                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        //matriz[35][20].add(imagen);
+                        puntuacion.setForeground(Color.GRAY);
+
+                        primerJugador = true;
+
+                    } else if (segundoJugador == false) {
+
+                        imagen4 = new JLabel();
+                        naveEnemiga = "asset/gray.png";
+                        puntuacionEnemiga.setForeground(Color.GRAY);
+                        colorMovimiento = 3;
+                        Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
+                        Mienemigo.setNaveImg(naveEnemiga);
+                        ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
+                        Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen4.setIcon(iconEnemigo);
+                        imagen4.setBounds(0, 0, 22, 22);
+                        matriz[5][20].add(imagen4);
+
+                        PanelPersonajes.setVisible(false);
+                        PanelPersonajes.setVisible(false);
+                        titulo.setVisible(false);
+                        nombrePersonaje.setVisible(false);
+                        panelJuego.setVisible(true);
+                        puntuacion.setVisible(true);
+                        puntuacionEnemiga.setVisible(true);
+                        
+                        ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));    
+                        imagen3.setIcon(icon);
+                        imagen3.setBounds(0, 0, 22, 22);
+                        matriz[35][20].add(imagen3);
+                        matriz[35][20].add(imagen3);
+                        
+                        jugadaDos.start();
+
+                    }
                 }
-                System.out.println(numero);
-                Mienemigo = new Enemigo(5, 20, naveEnemiga, true);
-                Mienemigo.setNaveImg(naveEnemiga);
-                ImageIcon imageiconEnemigo = new ImageIcon(Mienemigo.getNaveImg());
-                Icon iconEnemigo = new ImageIcon(imageiconEnemigo.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-                imagen4.setIcon(iconEnemigo);
-                imagen4.setBounds(0, 0, 22, 22);
-                matriz[5][20].add(imagen4);
-                //fin enemigo
-
-                puntuacion.setForeground(Color.GRAY);
-                puntuacion.setVisible(true);
-                puntuacionEnemiga.setVisible(true);
-                timer.start();
 
             }
 
@@ -804,6 +1069,350 @@ public class JuegoTron extends JFrame {
 
     }
 
+    //nave manejada por otra persona 
+    public void logicaPersonaje2() {
+        System.out.println("logica");
+
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == '6') {
+                    //derecha   
+                    int ejeX = Mienemigo.getEjeX();
+                    int ejeY = Mienemigo.getEjeY();
+                    int derecha = Mienemigo.getEjeY() + 1;
+
+                    try {
+                        Estado proximoMovimiento = estados[ejeX][derecha];
+
+                        if (proximoMovimiento.getEstado()) {
+
+                            System.out.println("choque");
+
+                            // explosion
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+                            Mienemigo.setNaveImg("asset/explosion.png");
+                            ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][ejeY].add(imagen);
+                            //fin explosion
+
+                            Mienemigo.setVivo(false);
+
+                        } else {
+
+                            //reseteamos panel derecho
+                            matriz[ejeX][derecha].removeAll();
+                            matriz[ejeX][derecha].repaint();
+                            JLabel imagen = new JLabel();
+
+                            ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][derecha].add(imagen);
+                            matriz[ejeX][derecha].setBackground(Color.black);
+                            //elimina todo la posicion actual donde esta el pacman
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+
+                            //pintamos de color por donde pasa
+                            if (Mienemigo.getNaveImg() == "asset/red.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.red);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Mienemigo.getNaveImg() == "asset/blue.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Mienemigo.getNaveImg() == "asset/gray.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.gray);
+                                estados[ejeX][ejeY].setEstado(true);
+                            }
+
+                            sumadorSegundoJugador++;
+                            puntuacionEnemiga.setText("Puntuacion: " + sumadorSegundoJugador);
+                            Mienemigo.setEjeY(derecha);
+                            derechaM2 = true;
+                            izquierdaM2 = false;
+                            arribaM2 = false;
+                            abajoM2 = false;
+
+                        }
+
+                    } catch (ArrayIndexOutOfBoundsException excepcio) {
+                        matriz[ejeX][ejeY].removeAll();
+                        matriz[ejeX][ejeY].repaint();
+                        Mienemigo.setNaveImg("asset/explosion.png");
+                        ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[ejeX][ejeY].add(imagen);
+                        Mienemigo.setVivo(false);
+
+                    } catch (ArithmeticException excepcion) {
+                        System.out.println(" Error de índice en un array");
+                    } finally {
+                        System.out.println("Se ejecuta finally");
+                    }
+
+                } else if (e.getKeyChar() == '4') {
+
+                    //izquierda 
+                    int ejeX = Mienemigo.getEjeX();
+                    int ejeY = Mienemigo.getEjeY();
+                    int izquierda = Mienemigo.getEjeY() - 1;
+
+                    try {
+                        Estado proximoMovimiento = estados[ejeX][izquierda];
+                        if (proximoMovimiento.getEstado()) {
+                            System.out.println("choque");
+
+                            // explosion
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+                            Mienemigo.setNaveImg("asset/explosion.png");
+                            ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][ejeY].add(imagen);
+                            //fin explosion
+                            Mienemigo.setVivo(false);
+
+                        } else {
+
+                            //reseteamos panel derecho
+                            matriz[ejeX][izquierda].removeAll();
+                            matriz[ejeX][izquierda].repaint();
+                            JLabel imagen = new JLabel();
+
+                            ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][izquierda].add(imagen);
+                            matriz[ejeX][izquierda].setBackground(Color.black);
+                            //elimina todo la posicion actual donde esta el pacman
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+
+                            //pintamos de color por donde pasa
+                            if (Mienemigo.getNaveImg() == "asset/red.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.red);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Mienemigo.getNaveImg() == "asset/blue.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Mienemigo.getNaveImg() == "asset/gray.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.gray);
+                                estados[ejeX][ejeY].setEstado(true);
+                            }
+
+                            sumadorSegundoJugador++;
+                            puntuacionEnemiga.setText("Puntuacion: " + sumadorSegundoJugador);
+                            Mienemigo.setEjeY(izquierda);
+                            derechaM2 = false;
+                            izquierdaM2 = true;
+                            arribaM2 = false;
+                            abajoM2 = false;
+
+                        }
+
+                    } catch (ArrayIndexOutOfBoundsException excepcio) {
+                        matriz[ejeX][ejeY].removeAll();
+                        matriz[ejeX][ejeY].repaint();
+                        Mienemigo.setNaveImg("asset/explosion.png");
+                        ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[ejeX][ejeY].add(imagen);
+                        Mienemigo.setVivo(false);
+
+                    } catch (ArithmeticException excepcion) {
+                        System.out.println(" Error de índice en un array");
+                    } finally {
+                        System.out.println("Se ejecuta finally");
+                    }
+
+                } else if (e.getKeyChar() == '8') {
+
+                    //arriba 
+                    int ejeX = Mienemigo.getEjeX();
+                    int ejeY = Mienemigo.getEjeY();
+                    int arriba = Mienemigo.getEjeX() - 1;
+
+                    try {
+                        Estado proximoMovimiento = estados[arriba][ejeY];
+                        if (proximoMovimiento.getEstado()) {
+                            System.out.println("choque");
+
+                            // explosion
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+                            Mienemigo.setNaveImg("asset/explosion.png");
+                            ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][ejeY].add(imagen);
+                            //fin explosion
+                            Mienemigo.setVivo(false);
+
+                        } else {
+
+                            //reseteamos panel arriba
+                            matriz[arriba][ejeY].removeAll();
+                            matriz[arriba][ejeY].repaint();
+                            JLabel imagen = new JLabel();
+
+                            ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[arriba][ejeY].add(imagen);
+                            matriz[arriba][ejeY].setBackground(Color.black);
+                            //elimina todo la posicion actual donde esta el pacman
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+
+                            //pintamos de color por donde pasa
+                            if (Mienemigo.getNaveImg() == "asset/red.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.red);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Mienemigo.getNaveImg() == "asset/blue.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Mienemigo.getNaveImg() == "asset/gray.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.gray);
+                                estados[ejeX][ejeY].setEstado(true);
+                            }
+
+                            sumadorSegundoJugador++;
+                            puntuacionEnemiga.setText("Puntuacion: " + sumadorSegundoJugador);
+                            Mienemigo.setEjeX(arriba);
+                            derechaM2 = false;
+                            izquierdaM2 = false;
+                            arribaM2 = true;
+                            abajoM2 = false;
+
+                        }
+
+                    } catch (ArrayIndexOutOfBoundsException excepcio) {
+                        matriz[ejeX][ejeY].removeAll();
+                        matriz[ejeX][ejeY].repaint();
+                        Mienemigo.setNaveImg("asset/explosion.png");
+                        ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[ejeX][ejeY].add(imagen);
+                        Mienemigo.setVivo(false);
+
+                    } catch (ArithmeticException excepcion) {
+                        System.out.println(" Error de índice en un array");
+                    } finally {
+                        System.out.println("Se ejecuta finally");
+                    }
+
+                } else if (e.getKeyChar() == '5') {
+
+                    //abajo 
+                    int ejeX = Mienemigo.getEjeX();
+                    int ejeY = Mienemigo.getEjeY();
+                    int abajo = Mienemigo.getEjeX() + 1;
+
+                    try {
+                        Estado proximoMovimiento = estados[abajo][ejeY];
+                        if (proximoMovimiento.getEstado()) {
+                            System.out.println("choque");
+
+                            // explosion
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+                            Mienemigo.setNaveImg("asset/explosion.png");
+                            ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[ejeX][ejeY].add(imagen);
+                            //fin explosion
+                            Mienemigo.setVivo(false);
+
+                        } else {
+
+                            //reseteamos panel arriba
+                            matriz[abajo][ejeY].removeAll();
+                            matriz[abajo][ejeY].repaint();
+                            JLabel imagen = new JLabel();
+
+                            ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                            Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                            imagen.setIcon(icon);
+                            imagen.setBounds(0, 0, 22, 22);
+                            matriz[abajo][ejeY].add(imagen);
+                            matriz[abajo][ejeY].setBackground(Color.black);
+                            //elimina todo la posicion actual donde esta el pacman
+                            matriz[ejeX][ejeY].removeAll();
+                            matriz[ejeX][ejeY].repaint();
+
+                            //pintamos de color por donde pasa
+                            if (Mienemigo.getNaveImg() == "asset/red.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.red);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Mienemigo.getNaveImg() == "asset/blue.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                                estados[ejeX][ejeY].setEstado(true);
+                            } else if (Mienemigo.getNaveImg() == "asset/gray.png") {
+                                matriz[ejeX][ejeY].setBackground(Color.gray);
+                                estados[ejeX][ejeY].setEstado(true);
+                            }
+
+                            sumadorSegundoJugador++;
+                            puntuacionEnemiga.setText("Puntuacion: " + sumadorSegundoJugador);
+                            Mienemigo.setEjeX(abajo);
+                            derechaM2 = false;
+                            izquierdaM2 = false;
+                            arribaM2 = false;
+                            abajoM2 = true;
+
+                        }
+
+                    } catch (ArrayIndexOutOfBoundsException excepcio) {
+                        matriz[ejeX][ejeY].removeAll();
+                        matriz[ejeX][ejeY].repaint();
+                        Mienemigo.setNaveImg("asset/explosion.png");
+                        ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                        imagen.setIcon(icon);
+                        imagen.setBounds(0, 0, 22, 22);
+                        matriz[ejeX][ejeY].add(imagen);
+                        Mienemigo.setVivo(false);
+
+                    } catch (ArithmeticException excepcion) {
+                        System.out.println(" Error de índice en un array");
+                    } finally {
+                        System.out.println("Se ejecuta finally");
+                    }
+                }
+            }
+        });
+
+    }
+
     public void speed() {
 
         if (derechaM) {
@@ -1121,6 +1730,334 @@ public class JuegoTron extends JFrame {
                 imagen.setBounds(0, 0, 22, 22);
                 matriz[ejeX][ejeY].add(imagen);
                 Minave.setVivo(false);
+
+            } catch (ArithmeticException excepcion) {
+                System.out.println(" Error de índice en un array");
+            } finally {
+                System.out.println("Se ejecuta finally");
+            }
+
+        }
+
+    }
+
+    public void speedSegundoPersonaje() {
+
+        if (derechaM2) {
+
+            //derecha   
+            int ejeX = Mienemigo.getEjeX();
+            int ejeY = Mienemigo.getEjeY();
+            int derecha = Mienemigo.getEjeY() + 1;
+
+            try {
+                Estado proximoMovimiento = estados[ejeX][derecha];
+
+                if (proximoMovimiento.getEstado()) {
+
+                    System.out.println("choque");
+
+                    // explosion
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+                    Mienemigo.setNaveImg("asset/explosion.png");
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][ejeY].add(imagen);
+                    Mienemigo.setVivo(false);
+                    //fin explosion
+
+                } else {
+
+                    //reseteamos panel derecho
+                    matriz[ejeX][derecha].removeAll();
+                    matriz[ejeX][derecha].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][derecha].add(imagen);
+                    matriz[ejeX][derecha].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Mienemigo.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Mienemigo.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Mienemigo.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                        estados[ejeX][ejeY].setEstado(true);
+                    }
+
+                    sumadorSegundoJugador++;
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorSegundoJugador);
+                    Mienemigo.setEjeY(derecha);
+                    derechaM2 = true;
+                    izquierdaM2 = false;
+                    arribaM2 = false;
+                    abajoM2 = false;
+
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcio) {
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+                Mienemigo.setNaveImg("asset/explosion.png");
+                ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[ejeX][ejeY].add(imagen);
+                Mienemigo.setVivo(false);
+
+            } catch (ArithmeticException excepcion) {
+                System.out.println(" Error de índice en un array");
+            } finally {
+                System.out.println("Se ejecuta finally");
+            }
+
+        } else if (izquierdaM2) {
+
+            //izquierda 
+            int ejeX = Mienemigo.getEjeX();
+            int ejeY = Mienemigo.getEjeY();
+            int izquierda = Mienemigo.getEjeY() - 1;
+
+            try {
+                Estado proximoMovimiento = estados[ejeX][izquierda];
+                if (proximoMovimiento.getEstado()) {
+                    System.out.println("choque");
+
+                    // explosion
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+                    Mienemigo.setNaveImg("asset/explosion.png");
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][ejeY].add(imagen);
+                    Mienemigo.setVivo(false);
+                    //fin explosion
+
+                } else {
+
+                    //reseteamos panel derecho
+                    matriz[ejeX][izquierda].removeAll();
+                    matriz[ejeX][izquierda].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][izquierda].add(imagen);
+                    matriz[ejeX][izquierda].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Mienemigo.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Mienemigo.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Mienemigo.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                        estados[ejeX][ejeY].setEstado(true);
+                    }
+
+                    sumadorSegundoJugador++;
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorSegundoJugador);
+                    Mienemigo.setEjeY(izquierda);
+                    derechaM2 = false;
+                    izquierdaM2 = true;
+                    arribaM2 = false;
+                    abajoM2 = false;
+
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcio) {
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+                Mienemigo.setNaveImg("asset/explosion.png");
+                ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[ejeX][ejeY].add(imagen);
+                Mienemigo.setVivo(false);
+
+            } catch (ArithmeticException excepcion) {
+                System.out.println(" Error de índice en un array");
+            } finally {
+                System.out.println("Se ejecuta finally");
+            }
+
+        } else if (arribaM2) {
+
+            //arriba 
+            int ejeX = Mienemigo.getEjeX();
+            int ejeY = Mienemigo.getEjeY();
+            int arriba = Mienemigo.getEjeX() - 1;
+
+            try {
+                Estado proximoMovimiento = estados[arriba][ejeY];
+                if (proximoMovimiento.getEstado()) {
+                    System.out.println("choque");
+
+                    // explosion
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+                    Mienemigo.setNaveImg("asset/explosion.png");
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][ejeY].add(imagen);
+                    Mienemigo.setVivo(false);
+                    //fin explosion
+
+                } else {
+
+                    //reseteamos panel arriba
+                    matriz[arriba][ejeY].removeAll();
+                    matriz[arriba][ejeY].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[arriba][ejeY].add(imagen);
+                    matriz[arriba][ejeY].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Mienemigo.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Mienemigo.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Mienemigo.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                        estados[ejeX][ejeY].setEstado(true);
+                    }
+
+                    sumadorSegundoJugador++;
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorSegundoJugador);
+                    Mienemigo.setEjeX(arriba);
+                    derechaM2 = false;
+                    izquierdaM2 = false;
+                    arribaM2 = true;
+                    abajoM2 = false;
+
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcio) {
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+                Mienemigo.setNaveImg("asset/explosion.png");
+                ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[ejeX][ejeY].add(imagen);
+                Mienemigo.setVivo(false);
+
+            } catch (ArithmeticException excepcion) {
+                System.out.println(" Error de índice en un array");
+            } finally {
+                System.out.println("Se ejecuta finally");
+            }
+
+        } else if (abajoM2) {
+
+            //abajo 
+            int ejeX = Mienemigo.getEjeX();
+            int ejeY = Mienemigo.getEjeY();
+            int abajo = Mienemigo.getEjeX() + 1;
+
+            try {
+                Estado proximoMovimiento = estados[abajo][ejeY];
+                if (proximoMovimiento.getEstado()) {
+                    System.out.println("choque");
+
+                    // explosion
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+                    Mienemigo.setNaveImg("asset/explosion.png");
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[ejeX][ejeY].add(imagen);
+                    //fin explosion
+                    Mienemigo.setVivo(false);
+
+                } else {
+
+                    //reseteamos panel arriba
+                    matriz[abajo][ejeY].removeAll();
+                    matriz[abajo][ejeY].repaint();
+                    JLabel imagen = new JLabel();
+
+                    ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                    Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                    imagen.setIcon(icon);
+                    imagen.setBounds(0, 0, 22, 22);
+                    matriz[abajo][ejeY].add(imagen);
+                    matriz[abajo][ejeY].setBackground(Color.black);
+                    //elimina todo la posicion actual donde esta el pacman
+                    matriz[ejeX][ejeY].removeAll();
+                    matriz[ejeX][ejeY].repaint();
+
+                    //pintamos de color por donde pasa
+                    if (Mienemigo.getNaveImg() == "asset/red.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.red);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Mienemigo.getNaveImg() == "asset/blue.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.GREEN);
+                        estados[ejeX][ejeY].setEstado(true);
+                    } else if (Mienemigo.getNaveImg() == "asset/gray.png") {
+                        matriz[ejeX][ejeY].setBackground(Color.gray);
+                        estados[ejeX][ejeY].setEstado(true);
+                    }
+
+                    sumadorSegundoJugador++;
+                    puntuacionEnemiga.setText("Puntuacion: " + sumadorSegundoJugador);
+                    Mienemigo.setEjeX(abajo);
+                    derechaM2 = false;
+                    izquierdaM2 = false;
+                    arribaM2 = false;
+                    abajoM2 = true;
+
+                }
+
+            } catch (ArrayIndexOutOfBoundsException excepcio) {
+                matriz[ejeX][ejeY].removeAll();
+                matriz[ejeX][ejeY].repaint();
+                Mienemigo.setNaveImg("asset/explosion.png");
+                ImageIcon imageicon = new ImageIcon(Mienemigo.getNaveImg());
+                Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
+                imagen.setIcon(icon);
+                imagen.setBounds(0, 0, 22, 22);
+                matriz[ejeX][ejeY].add(imagen);
+                Mienemigo.setVivo(false);
 
             } catch (ArithmeticException excepcion) {
                 System.out.println(" Error de índice en un array");
@@ -1595,11 +2532,11 @@ public class JuegoTron extends JFrame {
     }
 
     public void ganador() {
-            
-        String[] botones = { "Salir."};
-        
+
+        String[] botones = {"Salir."};
+
         if (Minave.isVivo() == false) {
-            
+
             int ventana = JOptionPane.showOptionDialog(null,
                     "Has perdido",
                     "TRON",
@@ -1607,12 +2544,12 @@ public class JuegoTron extends JFrame {
                     JOptionPane.QUESTION_MESSAGE, null,
                     botones, botones[0]);
 
-             if (ventana == 0) {
+            if (ventana == 0) {
                 System.exit(0);
             }
 
         } else if (Mienemigo.isVivo() == false) {
-            
+
             int ventana = JOptionPane.showOptionDialog(null,
                     "Has perdido",
                     "TRON",
@@ -1620,7 +2557,7 @@ public class JuegoTron extends JFrame {
                     JOptionPane.QUESTION_MESSAGE, null,
                     botones, botones[0]);
 
-             if (ventana == 0) {
+            if (ventana == 0) {
                 System.exit(0);
             }
 
