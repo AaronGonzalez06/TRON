@@ -2571,7 +2571,7 @@ public class JuegoTron extends JFrame {
             if (Minave.isVivo() == false) {
 
                 int ventana = JOptionPane.showOptionDialog(null,
-                        "Gana jugador 2. Puntuación: " + sumadorEnemigo,
+                        "Gana jugador 2. Puntuación: " + sumadorSegundoJugador,
                         "TRON",
                         JOptionPane.DEFAULT_OPTION,
                         JOptionPane.QUESTION_MESSAGE, null,
