@@ -425,12 +425,12 @@ public class JuegoTron extends JFrame {
                         titulo.setVisible(false);
                         nombrePersonaje.setVisible(false);
                         panelJuego.setVisible(true);
-                        
+
                         puntuacion.setVisible(true);
                         puntuacionEnemiga.setVisible(true);
-                        
+
                         ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));    
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
                         imagen.setIcon(icon);
                         imagen.setBounds(0, 0, 22, 22);
                         matriz[35][20].add(imagen);
@@ -542,12 +542,12 @@ public class JuegoTron extends JFrame {
                         PanelPersonajes.setVisible(false);
                         titulo.setVisible(false);
                         nombrePersonaje.setVisible(false);
-                        panelJuego.setVisible(true);                        
+                        panelJuego.setVisible(true);
                         puntuacion.setVisible(true);
                         puntuacionEnemiga.setVisible(true);
-                        
+
                         ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));    
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
                         imagen2.setIcon(icon);
                         imagen2.setBounds(0, 0, 22, 22);
                         matriz[35][20].add(imagen2);
@@ -666,14 +666,14 @@ public class JuegoTron extends JFrame {
                         panelJuego.setVisible(true);
                         puntuacion.setVisible(true);
                         puntuacionEnemiga.setVisible(true);
-                        
+
                         ImageIcon imageicon = new ImageIcon(Minave.getNaveImg());
-                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));    
+                        Icon icon = new ImageIcon(imageicon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
                         imagen3.setIcon(icon);
                         imagen3.setBounds(0, 0, 22, 22);
                         matriz[35][20].add(imagen3);
                         matriz[35][20].add(imagen3);
-                        
+
                         jugadaDos.start();
 
                     }
@@ -2533,32 +2533,67 @@ public class JuegoTron extends JFrame {
 
     public void ganador() {
 
-        String[] botones = {"Salir."};
+        if (modoJuego == 0) {
 
-        if (Minave.isVivo() == false) {
+            String[] botones = {"Salir."};
 
-            int ventana = JOptionPane.showOptionDialog(null,
-                    "Has perdido",
-                    "TRON",
-                    JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.QUESTION_MESSAGE, null,
-                    botones, botones[0]);
+            if (Minave.isVivo() == false) {
 
-            if (ventana == 0) {
-                System.exit(0);
+                int ventana = JOptionPane.showOptionDialog(null,
+                        "Has ganado",
+                        "TRON",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null,
+                        botones, botones[0]);
+
+                if (ventana == 0) {
+                    System.exit(0);
+                }
+
+            } else if (Mienemigo.isVivo() == false) {
+
+                int ventana = JOptionPane.showOptionDialog(null,
+                        "Has perdido",
+                        "TRON",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null,
+                        botones, botones[0]);
+
+                if (ventana == 0) {
+                    System.exit(0);
+                }
+
             }
 
-        } else if (Mienemigo.isVivo() == false) {
+        } else if (modoJuego == 1) {            
+            String[] botones = {"Salir."};
 
-            int ventana = JOptionPane.showOptionDialog(null,
-                    "Has perdido",
-                    "TRON",
-                    JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.QUESTION_MESSAGE, null,
-                    botones, botones[0]);
+            if (Minave.isVivo() == false) {
 
-            if (ventana == 0) {
-                System.exit(0);
+                int ventana = JOptionPane.showOptionDialog(null,
+                        "Gana jugador 2. Puntuación: " + sumadorEnemigo,
+                        "TRON",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null,
+                        botones, botones[0]);
+
+                if (ventana == 0) {
+                    System.exit(0);
+                }
+
+            } else if (Mienemigo.isVivo() == false) {
+
+                int ventana = JOptionPane.showOptionDialog(null,
+                        "Gana jugador 1. Puntuación: " + sumador,
+                        "TRON",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null,
+                        botones, botones[0]);
+
+                if (ventana == 0) {
+                    System.exit(0);
+                }
+
             }
 
         }
